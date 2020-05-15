@@ -10,6 +10,12 @@ import subprocess
 import os
 import threading
 import time
+import datetime
+import platform
+
+# imports from pip
+import requests
+import psutil
 
 #VARIABLES
 stop_displaying = False
@@ -25,6 +31,38 @@ def sleep(seconds):
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+
+## MAKE HTTP REQUESTS
+def request(url, type, parameters=None, data=None, headers=None, json_body=None):
+    if type.lower() == 'get':
+        r = requests.get(url=url, params=parameters, headers=headers)
+        return r
+    elif type.lower() == 'post':
+        r = requests.post(url=url, data=data, json=json_body, headers=headers)
+    else:
+        return "Sorry but this HTTP Request Type is not available yet."
+
+
+## DATE AND TIME
+
+# TODAY'S DATE
+def today():
+    today = datetime.date.today()
+    return str(today)
+
+# CURRENT TIME
+def current_time():
+    now = datetime.datetime.now()
+    time = now.strftime("%H:%M:%S")
+    return time
+
+# SYSTEM TIMEZONE
+def timezone():
+    return time.strftime("%Z", time.gmtime())
+
+def hours_from_greenwich():
+    hours = time.strftime("%z", time.gmtime())
+    return hours[:3]
 
 ## DISPLAY ACTIONS
 def display_action(action_to_display, times=3, delay=0.2):
@@ -74,7 +112,7 @@ def display(wait=2, delay=0.1):
 # STOPPING THE THREAD
 def stop_multi_thread_display():
     global stop_displaying
-    if stop_displaying == False: 
+    if stop_displaying == False:
         stop_displaying = True
         sleep(multi_thread_display_waiting_time)
         stop_displaying = False
@@ -171,4 +209,129 @@ def get_size_from_bytes(bytes, suffix="B"):
         if bytes < factor:
             return f"{bytes:.2f}{unit}{suffix}"
         bytes /= factor
+
+
+## SYSTEM AND HARDWARE INFO
+
+def system():
+    return platform.uname().system
+
+def node():
+    return platform.uname().node
+
+def release():
+    return platform.uname().release
+
+def version():
+    return platform.uname().version
+
+def machine():
+    return platform.uname().machine
+
+def processor():
+    return platform.uname().processor
+
+def boot_time():
+    boot_time_timestamp = psutil.boot_time()
+    bt = datetime.datetime.fromtimestamp(boot_time_timestamp)
+    return f"{bt.year}/{bt.month}/{bt.day} {bt.hour}:{bt.minute}:{bt.second}"
+
+def number_of_physical_cores():
+    return psutil.cpu_count(logical=False)
+
+def number_of_cores():
+    return psutil.cpu_count(logical=True)
+
+def cpu_max_frequency():
+    return psutil.cpu_freq().max
+
+def cpu_min_frequency():
+    return psutil.cpu_freq().min
+
+def cpu_current_frequency():
+    return psutil.cpu_freq().current
+
+def cpu_usage_per_core():
+    usage = {}
+    for i, percentage in enumerate(psutil.cpu_percent(percpu=True)):
+        usage["core" + i] = percentage
+    return usage
+
+def cpu_usage():
+    return psutil.cpu_percent()
+
+def total_ram():
+    return get_size_from_bytes(psutil.virtual_memory().total)
+
+def available_ram():
+    return get_size_from_bytes(psutil.virtual_memory().available)
+
+def used_ram():
+    return get_size_from_bytes(psutil.virtual_memory().used)
+
+def used_ram_percentage():
+    return psutil.virtual_memory().percent
+
+def total_swap_memory():
+    return get_size_from_bytes(psutil.swap_memory().total)
+
+def free_swap_memory():
+    return get_size_from_bytes(psutil.swap_memory().free)
+
+def used_swap_memory():
+    return get_size_from_bytes(psutil.swap_memory().used)
+
+def used_swap_memory_percentage():
+    return get_size_from_bytes(psutil.swap_memory().percent)
+
+def disks_infos():
+    partion_infos = {}
+    results = {}
+    partitions = psutil.disk_partitions()
+    for partition in partitions: 
+        partion_infos["mountpoint"] = partition.mountpoint 
+        partion_infos["filesystem_type"] = partition.fstype 
+        try:
+            partition_usage = psutil.disk_usage(partition.mountpoint)
+        except PermissionError:
+            # this can be catched due to the disk that
+            # isn't ready
+            results[partition.device] = partion_infos
+            continue
+        partion_infos["total_size"] = get_size_from_bytes(partition_usage.total) 
+        partion_infos["used_space"] = get_size_from_bytes(partition_usage.used)
+        partion_infos["free_space"] = get_size_from_bytes(partition_usage.free)
+        partion_infos["space_percentage"] = get_size_from_bytes(partition_usage.percent)
         
+        results[partition.device] = partion_infos
+    return results
+
+def disk_total_read():
+    return get_size_from_bytes(psutil.disk_io_counters().read_bytes)
+
+def disk_total_write():
+    return get_size_from_bytes(psutil.disk_io_counters().write_bytes)
+
+def ip_address():
+    # get all network interfaces (virtual and physical)
+    if_addrs = psutil.net_if_addrs()
+    for _, interface_addresses in if_addrs.items():
+        for address in interface_addresses:
+            if str(address.family) == 'AddressFamily.AF_INET':
+                if f"{address.broadcast}" != "None":
+                    return(f"{address.address}")
+
+def number_of_network_interfaces():
+    number = 0
+    # get all network interfaces (virtual and physical)
+    if_addrs = psutil.net_if_addrs()
+    for _, interface_addresses in if_addrs.items():
+        for _ in interface_addresses:
+            number += 1
+    return number
+
+def net_total_bytes_sent():
+    return get_size_from_bytes(psutil.net_io_counters().bytes_sent)
+                
+def net_total_bytes_received():
+    return get_size_from_bytes(psutil.net_io_counters().bytes_recv)
