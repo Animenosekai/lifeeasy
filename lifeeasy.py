@@ -114,6 +114,7 @@ def display(wait=2, delay=0.1):
             sleep(delay)
         if stop_displaying == False:
             t = threading.Timer(wait, display, args=[wait, delay])
+            t.daemon = True
             t.start()
     else:
         return 'Another instance is already running.'
