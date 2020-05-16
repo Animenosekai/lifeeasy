@@ -31,6 +31,17 @@ def sleep(seconds):
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+## CHANGE WORKING DIR
+def change_working_dir(new_dir):
+    try:
+        os.chdir(new_dir)
+        return 0
+    except:
+        return 1
+
+def working_dir():
+    return os.getcwd()
+
 ## COMMANDS
 def command_output(command_list):
     result = subprocess.check_output(command, universal_newlines=True)
@@ -130,6 +141,7 @@ def stop_multi_thread_display():
 
 
 ## FILE ACTIONS
+
 
 # MOVING A FILE
 def move(origin, destination):
