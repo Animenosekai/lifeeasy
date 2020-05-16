@@ -211,6 +211,45 @@ def get_size_from_bytes(bytes, suffix="B"):
         bytes /= factor
 
 
+## OPERATIONS
+
+# SUM
+def sum(numbers):
+    final_result = numbers[0]
+    list = numbers
+    del list[0]
+    for number in list:
+        final_result += number
+    return final_result
+
+def substract(numbers):
+    final_result = numbers[0]
+    list = numbers
+    del list[0]
+    for number in list:
+        final_result -= number
+    return final_result
+
+def multiply(numbers):
+    final_result = numbers[0]
+    list = numbers
+    del list[0]
+    for number in list:
+        final_result = final_result * number
+    return final_result
+
+def divide(numbers):
+    final_result = numbers[0]
+    list = numbers
+    del list[0]
+    for number in list:
+        if number == 0:
+            return "Error: Division by zero"
+        else:
+            final_result = final_result / number
+    return final_result
+
+
 ## SYSTEM AND HARDWARE INFO
 
 def system():
