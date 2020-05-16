@@ -31,6 +31,14 @@ def sleep(seconds):
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+## COMMANDS
+def command_output(command_list):
+    result = subprocess.check_output(command, universal_newlines=True)
+    return result
+
+def command(command):
+    result = os.system(command)
+    return result
 
 ## MAKE HTTP REQUESTS
 def request(url, type, parameters=None, data=None, headers=None, json_body=None):
@@ -39,6 +47,7 @@ def request(url, type, parameters=None, data=None, headers=None, json_body=None)
         return r
     elif type.lower() == 'post':
         r = requests.post(url=url, data=data, json=json_body, headers=headers)
+        return r
     else:
         return "Sorry but this HTTP Request Type is not available yet."
 
