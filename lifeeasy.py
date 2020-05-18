@@ -142,7 +142,6 @@ def stop_multi_thread_display():
 
 ## FILE ACTIONS
 
-
 # MOVING A FILE
 def move(origin, destination):
     indexes_of_slash = [i for i, ltr in enumerate(origin) if ltr == "\\"]
