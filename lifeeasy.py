@@ -73,6 +73,7 @@ def request(url, type, parameters=None, data=None, headers=None, json_body=None)
         return r
     elif type.lower() == 'options':
         r = requests.options(url=url)
+        return r
     else:
         return "Sorry but this HTTP Request Type is not available yet."
 
