@@ -59,6 +59,20 @@ def request(url, type, parameters=None, data=None, headers=None, json_body=None)
     elif type.lower() == 'post':
         r = requests.post(url=url, data=data, json=json_body, headers=headers)
         return r
+    elif type.lower() == 'delete':
+        r = requests.delete(url=url, headers=headers)
+        return r
+    elif type.lower() == 'patch':
+        r = requests.patch(url=url, data=data, headers=headers, json=json_body)
+        return r
+    elif type.lower() == 'put':
+        r = requests.put(url=url, data=data, headers=headers, json=json_body)
+        return r
+    elif type.lower() == 'head':
+        r = requests.head(url=url)
+        return r
+    elif type.lower() == 'options':
+        r = requests.options(url=url)
     else:
         return "Sorry but this HTTP Request Type is not available yet."
 
