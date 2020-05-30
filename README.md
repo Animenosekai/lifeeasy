@@ -27,7 +27,7 @@ Simply type `pip install lifeeasy` in your terminal/command-line prompt.
 
 <a name="whatis"/>
 
-## What is File Center?
+## What is LifeEasy?
 File Center is a simple library to make developers life easier with various of common, everyday functions callable with just one single line of code!.
 > You just have to import it to your project! `import filecenter`
 
