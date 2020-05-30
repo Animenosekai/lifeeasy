@@ -1,8 +1,6 @@
 # LifeEasy
  
  ### **A quick python toolbox that will let you access various multi-line and multi-imports function with just a single line of code!**
-
-[![PyPI version](https://badge.fury.io/py/filecenter.svg)](https://badge.fury.io/py/filecenter)
  
 ## Table of Content
 - [Installation](#installation)  
