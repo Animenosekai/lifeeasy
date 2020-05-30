@@ -691,52 +691,29 @@ If you want to help us and join me here is a quick guide.
 ### Files
 `__init.py__` is the main module
 
-`data_` All files with a `data_` suffix are data files (list of extensions for example).
-
-`data_common.py` is a list of file extensions that are common.
-
-`data_ext_to_human_readable.py` is a list of file extensions and its human readeable format.
-
-`data_extension_desc.py` is a list of file extensions and their description, using softwares.
-
-`data_type.py` is a list of file extensions and their general type (file types, i.e. Images, Web Development).
-
 `README.md` is the text file you're currently reading, with all the documentations and explanations.
 
 `LICENSE` is a text file with File Center's license
 
 #### Dependencies
-The File Center Library has no third-party dependencies needed.
+The File Center Library has two third-party dependencies.
 
-### Sources
-Datafile | Source
------------- | -------------
-data_common | [**FileInfo**](https://fileinfo.com/browse/),[**Wikipedia**](https://en.wikipedia.org/wiki/Main_Page), [**ComputerHope**](https://www.computerhope.com/)
-data_ext_to_human_readeable | [**Webopedia**](https://www.webopedia.com/quick_ref/fileextensionsfull.asp)
-data_extension_desc.py | [**Wikipedia**](https://en.wikipedia.org/wiki/List_of_filename_extensions)
-data_type | [**FileInfo**](https://fileinfo.com/browse/)
+- `requests`
+- `psutil
+
+Requests is used to make requests
+
+Psutil is used for system information.
 
 <a name="legals"/>
 
 ## Copyrights and Legals
 
-Every data here has been pulled from websites (and myself too lol) by hand (yea it took quite some time)
-
 **If you think that there is any kind of copyright infrigements, feel free to ask me to remove it and I will try to do so as soon as possible**
-
-**Wikipedia** is hosted by the Wikimedia Foundation
-
-**Computer Hope** belongs to [Nathan Emberton](https://www.computerhope.com/people/nathan_emberton.htm)
-
-**Webopedia** is a brand which belongs to TechnologyAdvice, LLC
-
-**FileInfo** belongs to Sharpened Productions
 
 **GitHub** is a brand which belongs to GitHub, Inc. (Microsoft)
 
 **Python** belongs to the Python Software Foundation
 
-
-I am in now way affiliated to FileInfo.com
 
 > ©Anime no Sekai - 2020 ✨
