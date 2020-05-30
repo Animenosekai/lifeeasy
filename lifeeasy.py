@@ -286,7 +286,7 @@ def open(file):
             subprocess.call(('open', file_path))
         elif platform.system() == 'Windows':    # Windows
             os.startfile(file_path)
-        else:                                   # linux variants
+        else:                                   # Other (i.e. linux distribution)
             subprocess.call(('xdg-open', file_path))
         return 0
     except:
@@ -567,8 +567,7 @@ def disks_infos():
         try:
             partition_usage = psutil.disk_usage(partition.mountpoint)
         except PermissionError:
-            # this can be catched due to the disk that
-            # isn't ready
+            # error if disk isn't ready
             results[partition.device] = partion_infos
             continue
         partion_infos["total_size"] = get_size_from_bytes(partition_usage.total) 
