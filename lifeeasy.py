@@ -216,7 +216,7 @@ def stop_display():
 # MOVING A FILE
 def move(origin, destination):
     """
-    Moves a given file to a given destination (you can use file_info too)
+    Moves a given file to a given destination (you can use filecenter too)
     """
     indexes_of_slash = [i for i, ltr in enumerate(origin) if ltr == "\\"]
     number_of_iterations = 0
@@ -243,7 +243,7 @@ def move(origin, destination):
 # DELETING A FILE
 def delete(file):
     """
-    Deletes a given file (you can use file_info too)
+    Deletes a given file (you can use filecenter too)
     """
     indexes_of_slash = [i for i, ltr in enumerate(file) if ltr == "\\"]
     number_of_iterations = 0
@@ -271,7 +271,7 @@ def delete(file):
 # OPENING A FILE
 def open(file):
     """
-    Opens a given file (you can use file_info too)
+    Opens a given file (you can use filecenter too)
     """
     indexes_of_slash = [i for i, ltr in enumerate(file) if ltr == "\\"]
     number_of_iterations = 0
