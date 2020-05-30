@@ -2,6 +2,8 @@
  
  ### **A quick python toolbox that will let you access various multi-line and multi-imports function with just a single line of code!**
  
+[![PyPI version](https://badge.fury.io/py/lifeeasy.svg)](https://badge.fury.io/py/lifeeasy)
+
 ## Table of Content
 - [Installation](#installation)  
 - [What is LifeEasy?](#whatis)
