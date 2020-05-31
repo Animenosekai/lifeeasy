@@ -26,22 +26,30 @@ body = []
 ## SAME AS TIME.SLEEP()
 def sleep(seconds):
     """
-    Blocks the function/Waits for a given number of second before resuming the function.
+    Blocks the function/Waits for a given number of second before resuming the function. (> int)
     """
-    time.sleep(seconds)
+    try:
+        time.sleep(seconds)
+        return 0
+    except:
+        return 1
 
 ## SAME AS CLEAR COMMAND IN BASH
 def clear():
     """
-    Clears the console.
+    Clears the console. (> int)
     """
-    os.system('cls' if os.name == 'nt' else 'clear')
+    try:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        return 0
+    except:
+        return 1
 
 ## CHANGE WORKING DIR
 def change_working_dir(new_dir):
     """
     Changes the working directory.
-    Returns 0 if succeded, 1 if failed.
+    Returns 0 if succeded, 1 if failed. (> int)
     """
     try:
         os.chdir(new_dir)
@@ -51,56 +59,56 @@ def change_working_dir(new_dir):
 
 def working_dir():
     """
-    Returns the working directory.
+    Returns the working directory. (> string)
     """
     return os.getcwd()
 
 ## COMMANDS
 def command_output(command_list):
     """
-    Executes a command and returns the output of the command.
+    Executes a command and returns the output of the command. (> mostly string)
     """
     result = subprocess.check_output(command, universal_newlines=True)
     return result
 
 def command(command):
     """
-    Executes a command and returns the response code.
+    Executes a command and returns the response code. (> mostly int)
     """
     result = os.system(command)
     return result
 
 ## MAKE HTTP REQUESTS
-def request(url, type, parameters=None, data=None, headers=None, json_body=None):
+def request(url, method, parameters=None, data=None, headers=None, json_body=None):
     """
     Makes an HTTP request.
-    This function needs at least an url and the method (called type here).
+    This function needs at least an url and the method (called method here).
     Returns a value of type <Response>
     See the requests module documentation to learn more about this response type.
     """
-    if type.lower() == 'get':
+    if method.lower() == 'get':
         r = requests.get(url=url, params=parameters, headers=headers)
         return r
-    elif type.lower() == 'post':
+    elif method.lower() == 'post':
         r = requests.post(url=url, data=data, json=json_body, headers=headers)
         return r
-    elif type.lower() == 'delete':
+    elif method.lower() == 'delete':
         r = requests.delete(url=url, headers=headers)
         return r
-    elif type.lower() == 'patch':
+    elif method.lower() == 'patch':
         r = requests.patch(url=url, data=data, headers=headers, json=json_body)
         return r
-    elif type.lower() == 'put':
+    elif method.lower() == 'put':
         r = requests.put(url=url, data=data, headers=headers, json=json_body)
         return r
-    elif type.lower() == 'head':
+    elif method.lower() == 'head':
         r = requests.head(url=url)
         return r
-    elif type.lower() == 'options':
+    elif method.lower() == 'options':
         r = requests.options(url=url)
         return r
     else:
-        return "Sorry but this HTTP Request Type is not available yet."
+        return "Sorry but this HTTP Request method is not available yet."
 
 
 ## DATE AND TIME
@@ -108,30 +116,43 @@ def request(url, type, parameters=None, data=None, headers=None, json_body=None)
 # TODAY'S DATE
 def today():
     """
-    Returns the current date.
+    Returns the current date. (> string)
     """
     today = datetime.date.today()
     return str(today)
 
+def today_raw():
+    """
+    Returns the current date as a datetime object (> datetime).
+    """
+    return datetime.date.today()
+
 # CURRENT TIME
 def current_time():
     """
-    Returns the current time with the format HOURs:MINUTEs:SECONDs
+    Returns the current time with the format HOURs:MINUTEs:SECONDs (> string)
     """
     now = datetime.datetime.now()
     time = now.strftime("%H:%M:%S")
     return time
 
+def current_time_raw():
+    """
+    Returns the current time as a datetime object (> datetime)
+    """
+    return datetime.datetime.now()
+
 # SYSTEM TIMEZONE
 def timezone():
     """
-    Returns the timezone of the system.
+    Returns the timezone of the system. (> string)
     """
     return time.strftime("%Z", time.gmtime())
 
 def hours_from_greenwich():
     """
-    Returns the number of hours between greenwitch and the computer.
+    Returns the number of hours between greenwitch and the computer. (> string)
+    The string is formatted following this format: < + or - > and < two digit integer >
     """
     hours = time.strftime("%z", time.gmtime())
     return hours[:3]
@@ -177,6 +198,7 @@ def display(wait=2, delay=0.1):
     """
     Displays a message with his title (set with the display_title() function) and his body (set with the display_body() function)
     This message will be displayed in another thread and therefore will be non-blocking (code after this function will continue running normally)
+    (> string if error)
     """
     global multi_thread_display_waiting_time
     multi_thread_display_waiting_time = wait
@@ -216,7 +238,7 @@ def stop_display():
 # MOVING A FILE
 def move(origin, destination):
     """
-    Moves a given file to a given destination (you can use file_info too)
+    Moves a given file to a given destination (you can use filecenter too) (> int)
     """
     indexes_of_slash = [i for i, ltr in enumerate(origin) if ltr == "\\"]
     number_of_iterations = 0
@@ -243,7 +265,7 @@ def move(origin, destination):
 # DELETING A FILE
 def delete(file):
     """
-    Deletes a given file (you can use file_info too)
+    Deletes a given file (you can use filecenter too) (> int)
     """
     indexes_of_slash = [i for i, ltr in enumerate(file) if ltr == "\\"]
     number_of_iterations = 0
@@ -271,7 +293,7 @@ def delete(file):
 # OPENING A FILE
 def open(file):
     """
-    Opens a given file (you can use file_info too)
+    Opens a given file (you can use filecenter too) (> int)
     """
     indexes_of_slash = [i for i, ltr in enumerate(file) if ltr == "\\"]
     number_of_iterations = 0
@@ -304,6 +326,7 @@ def get_size_from_bytes(bytes, suffix="B"):
     e.g:
         1253656 => '1.20MB'
         1253656678 => '1.17GB'
+    (> string)
     """
     factor = 1024
     for unit in ["", "K", "M", "G", "T", "P"]:
@@ -322,7 +345,7 @@ def wavelength_to_rgb(wavelength, gamma=0.8):
     in nanometers in the range from 380 nm through 750 nm
     (789 THz through 400 THz).
 
-    Returns a list of 3 values (R, G and B)
+    Returns a list of 3 values (R, G and B) (> list[int])
 
     Based on code by Dan Bruton
     http://www.physics.sfasu.edu/astro/color/spectra.html
@@ -369,7 +392,7 @@ def wavelength_to_rgb(wavelength, gamma=0.8):
 # SUM
 def sum(numbers):
     """
-    Returns the sum of the provided list of numbers
+    Returns the sum of the provided list of numbers (> float/int)
     """
     final_result = numbers[0]
     list = numbers
@@ -380,7 +403,7 @@ def sum(numbers):
 
 def substract(numbers):
     """
-    Returns the substraction of the provided list of numbers
+    Returns the substraction of the provided list of numbers (> float/int)
     """
     final_result = numbers[0]
     list = numbers
@@ -391,7 +414,7 @@ def substract(numbers):
 
 def multiply(numbers):
     """
-    Returns the multiplication of the provided list of numbers
+    Returns the multiplication of the provided list of numbers (> float/int)
     """
     final_result = numbers[0]
     list = numbers
@@ -402,7 +425,7 @@ def multiply(numbers):
 
 def divide(numbers):
     """
-    Returns the division of the provided list of numbers
+    Returns the division of the provided list of numbers (> float)
     """
     final_result = numbers[0]
     list = numbers
@@ -419,81 +442,87 @@ def divide(numbers):
 
 def system():
     """
-    Returns the system name
+    Returns the system name, generally 'nt' is Windows, 'Darwin' is macOS (> string)
     """
     return platform.uname().system
 
 def node():
     """
-    Returns the node name
+    Returns the node name (> string)
     """
     return platform.uname().node
 
 def release():
     """
-    Returns the system release name
+    Returns the system release name (> string)
     """
     return platform.uname().release
 
 def version():
     """
-    Returns the system version
+    Returns the system version (> string)
     """
     return platform.uname().version
 
 def machine():
     """
-    Returns the machine name
+    Returns the machine name (> string)
     """
     return platform.uname().machine
 
 def processor():
     """
-    Returns the processor (CPU) name
+    Returns the processor (CPU) name (> string)
     """
     return platform.uname().processor
 
 def boot_time():
     """
-    Returns the boot time with the format YEAR/MONTH/DAY HOUR:MIN:SECOND
+    Returns the boot time with the format YEAR/MONTH/DAY HOUR:MIN:SECOND (> string)
     """
     boot_time_timestamp = psutil.boot_time()
     bt = datetime.datetime.fromtimestamp(boot_time_timestamp)
     return f"{bt.year}/{bt.month}/{bt.day} {bt.hour}:{bt.minute}:{bt.second}"
 
+def boot_time_timestamp():
+    """
+    Returns the boot time expressed in seconds (> int)
+    """
+    return psutil.boot_time()
+
 def number_of_physical_cores():
     """
-    Returns the number of physical CPU cores
+    Returns the number of physical CPU cores (> int)
     """
     return psutil.cpu_count(logical=False)
 
 def number_of_cores():
     """
-    Returns the total number of CPU cores
+    Returns the total number of CPU cores (> int)
     """
     return psutil.cpu_count(logical=True)
 
 def cpu_max_frequency():
     """
-    Returns the processor maximum frequency
+    Returns the processor maximum frequency, in Mhz (> int)
     """
     return psutil.cpu_freq().max
 
 def cpu_min_frequency():
     """
-    Returns the processor minimum frequency
+    Returns the processor minimum frequency, in Mhz (> int)
     """
     return psutil.cpu_freq().min
 
 def cpu_current_frequency():
     """
-    Returns the current processor frequency
+    Returns the current processor frequency, in Mhz (> int)
     """
     return psutil.cpu_freq().current
 
 def cpu_usage_per_core():
     """
-    Returns the dict of the percent of processor usage for each core 
+    Returns the dict of the percent of processor usage for each core (> dict) 
     """
     usage = {}
     for i, percentage in enumerate(psutil.cpu_percent(percpu=True)):
@@ -502,61 +531,99 @@ def cpu_usage_per_core():
 
 def cpu_usage():
     """
-    Returns the processor usage in percentage
+    Returns the processor usage in percentage (> int)
     """
     return psutil.cpu_percent()
 
 def total_ram():
     """
-    Returns the total RAM installed
+    Returns the total RAM installed, in a readeable way (> string)
     """
     return get_size_from_bytes(psutil.virtual_memory().total)
 
 def available_ram():
     """
-    Returns the available RAM
+    Returns the available RAM, in a readeable way (> string)
     """
     return get_size_from_bytes(psutil.virtual_memory().available)
 
 def used_ram():
     """
-    Returns the used RAM
+    Returns the used RAM, in a readeable way (> string)
     """
     return get_size_from_bytes(psutil.virtual_memory().used)
 
 def used_ram_percentage():
     """
-    Returns the used RAM in percentage
+    Returns the used RAM in percentage (> int)
     """
     return psutil.virtual_memory().percent
 
+def available_ram_raw():
+    """
+    Returns the available RAM (> int)
+    """
+    return psutil.swap_memory().free
+
+def total_ram_raw():
+    """
+    Returns the total RAM installed (> int)
+    """
+    return psutil.swap_memory().total
+
+def used_ram_raw():
+    """
+    Returns the used RAM (> int)
+    """
+    return psutil.swap_memory().used
+
+
 def total_swap_memory():
     """
-    Returns the SWAP memory if available
+    Returns the SWAP memory if available, in a readeabl way (> string)
     """
     return get_size_from_bytes(psutil.swap_memory().total)
 
 def free_swap_memory():
     """
-    Returns the free SWAP memory if available
+    Returns the free SWAP memory if available, in a readeable way (> string)
     """
     return get_size_from_bytes(psutil.swap_memory().free)
 
 def used_swap_memory():
     """
-    Returns the used SWAP memory if available
+    Returns the used SWAP memory if available, in a readeable way (> string)
     """
     return get_size_from_bytes(psutil.swap_memory().used)
 
 def used_swap_memory_percentage():
     """
-    Returns the used SWAP memory in percentage if available
+    Returns the used SWAP memory in percentage if available (> int)
     """
-    return get_size_from_bytes(psutil.swap_memory().percent)
+    return psutil.swap_memory().percent
+
+def free_swap_memory_raw():
+    """
+    Returns the free SWAP memory if available (> int)
+    """
+    return psutil.swap_memory().free
+
+def total_swap_memory_raw():
+    """
+    Returns the total SWAP memory if available (> int)
+    """
+    return psutil.swap_memory().total
+
+def used_swap_memory_raw():
+    """
+    Returns the used SWAP memory if available (> int)
+    """
+    return psutil.swap_memory().used
+
 
 def disks_infos():
     """
-    Returns the a dict of infos for each disks
+    Returns a dict of infos for each disks (> dict)
     """
     partion_infos = {}
     results = {}
@@ -579,19 +646,34 @@ def disks_infos():
         results[partition.device] = partion_infos
     return results
 
+def disk_total_read_raw():
+    """
+    Returns the total amount of data read for the startup disk in bytes (> int)
+    """
+    return psutil.disk_io_counters().read_bytes
+
+def disk_total_write_raw():
+    """
+    Returns the total amount of data written for the startup disk in bytes (> int)
+    """
+    return psutil.disk_io_counters().write_bytes
+
 def disk_total_read():
     """
-    Returns the total read for the disk
+    Returns the total amount of data read for the startup disk in a readeable format (> string)
     """
     return get_size_from_bytes(psutil.disk_io_counters().read_bytes)
 
 def disk_total_write():
     """
-    Returns the total write for the disk
+    Returns the total amount of data written for the startup disk in a readeable format (> string)
     """
     return get_size_from_bytes(psutil.disk_io_counters().write_bytes)
 
 def ip_address():
+    """
+    Returns the IP Address (> string)
+    """
     # get all network interfaces (virtual and physical)
     if_addrs = psutil.net_if_addrs()
     for _, interface_addresses in if_addrs.items():
@@ -602,7 +684,7 @@ def ip_address():
 
 def number_of_network_interfaces():
     """
-    Returns the number of network interfaces
+    Returns the number of network interfaces (> int)
     """
     number = 0
     # get all network interfaces (virtual and physical)
@@ -614,12 +696,51 @@ def number_of_network_interfaces():
 
 def net_total_bytes_sent():
     """
-    Returns the total bytes sent over the network
+    Returns the total amount of data sent over the network (> string)
     """
     return get_size_from_bytes(psutil.net_io_counters().bytes_sent)
                 
 def net_total_bytes_received():
     """
-    Returns the total bytes received over the network
+    Returns the total amount of data received over the network (> string)
     """
     return get_size_from_bytes(psutil.net_io_counters().bytes_recv)
+
+def net_total_bytes_sent_raw():
+    """
+    Returns the total amount of data sent over the network (in bytes) (> int)
+    """
+    return psutil.net_io_counters().bytes_sent
+                
+def net_total_bytes_received_raw():
+    """
+    Returns the total amount of data received over the network (in bytes) (> int)
+    """
+    return psutil.net_io_counters().bytes_recv
+
+def network_interfaces():
+    """
+    Returns the IP Addresss/MAC address, Netmask and Brodcast IP/MAC for each network interfaces. (> dict)
+    """
+    # NETWORK INTERFACES DETAILS
+    network_interfaces = {}
+
+    try:
+        if_addrs = psutil.net_if_addrs()
+        for interface_name, interface_addresses in if_addrs.items():
+            for address in interface_addresses:
+                if str(address.family) == 'AddressFamily.AF_INET':
+                    network_interfaces[interface_name] = {
+                        'ip': address.address,
+                        'netmask': address.netmask,
+                        'broadcast_ip': address.broadcast
+                    }
+                elif str(address.family) == 'AddressFamily.AF_PACKET':
+                    network_interfaces[interface_name] = {
+                        'mac': address.address,
+                        'netmask': address.nNetmask,
+                        'broadcast_mac': address.broadcast
+                    }
+    except:
+        network_interfaces = {'status': 'error'}
+    return network_interfaces
