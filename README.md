@@ -551,6 +551,8 @@ Arguments:
 
 > Returns a dictionnary with the percentage of processor usage for each core (> dict)
 
+> The dict is formatted following this schema: {'core1': 10, 'core2': 14} with a string as the key and an int/float as the value.
+
 ---
 
 - **`cpu_usage()`**

@@ -623,7 +623,7 @@ def used_swap_memory_raw():
     return psutil.swap_memory().used
 
 
-def disks_infos():
+def disks_info():
     """
     Returns a dict of infos for each disks (> dict)
     """
@@ -647,6 +647,26 @@ def disks_infos():
         
         results[partition.device] = partion_infos
     return results
+
+def disk_info():
+    """
+    Same as disks_info()
+    """
+    return disks_infos()
+
+def disks_infos():
+    """
+    Same as disks_info()
+    """
+    return disks_infos()
+
+def disk_infos():
+    """
+    Same as disks_info()
+    """
+    return disks_infos()
+
+
 
 def disk_total_read_raw():
     """
