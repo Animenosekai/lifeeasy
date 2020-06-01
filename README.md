@@ -663,7 +663,7 @@ Arguments:
 
 ---
 
-- **`disks_infos()`**
+- **`disks_info()`**
 
 **Returns the installed disks information.**
 
@@ -672,6 +672,8 @@ Arguments:
     there is no argument.
 
 > Returns a dictionnary of infos for each disks mounted (> dict)
+
+> The returned dict is following this schema: {'/dev/disk1s1': {'mountpoint': '/Volumes/アニメの世界', 'filesystem_type': 'exfat', 'total_size': '931.48GB', 'total_size_raw': 1000169537536, 'used_space': '736.89GB', 'used_space_raw': 791230939136, 'free_space': '194.59GB', 'free_space_raw': 208938598400, 'space_percentage': 79.1}
 
 ---
 
@@ -756,6 +758,8 @@ Argument:
     there is no argument.
 
 > Returns a dict with the IP Addresss/MAC address, Netmask and Brodcast IP/MAC for each network interfaces (> dict)
+
+> The returned dict is following this schema: {'en1': {'ip': '0.0.0.0', 'netmask': '0.0.0.0', 'broadcast_ip': '0.0.0.0'}, 'eth0': {'mac': '00:00:00:00:00:00', 'netmask': None, 'broadcast_mac': 'ff:ff:ff:ff:ff:ff'}}
 
 <a name="advanced"/>
 

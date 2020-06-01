@@ -627,44 +627,47 @@ def disks_info():
     """
     Returns a dict of infos for each disks (> dict)
     """
-    partion_infos = {}
+    partition_infos = {}
     results = {}
     partitions = psutil.disk_partitions()
     for partition in partitions: 
-        partion_infos["mountpoint"] = partition.mountpoint 
-        partion_infos["filesystem_type"] = partition.fstype 
+        partition_infos["mountpoint"] = partition.mountpoint 
+        partition_infos["filesystem_type"] = partition.fstype 
         try:
             partition_usage = psutil.disk_usage(partition.mountpoint)
         except PermissionError:
             # this can be catched due to the disk that
             # isn't ready
-            results[partition.device] = partion_infos
+            results[partition.device] = partition_infos
             continue
-        partion_infos["total_size"] = get_scaled_size(partition_usage.total) 
-        partion_infos["used_space"] = get_scaled_size(partition_usage.used)
-        partion_infos["free_space"] = get_scaled_size(partition_usage.free)
-        partion_infos["space_percentage"] = get_scaled_size(partition_usage.percent)
+        partition_infos["total_size"] = get_scaled_size(partition_usage.total)
+        partition_infos['total_size_raw'] = partition_usage.total
+        partition_infos["used_space"] = get_scaled_size(partition_usage.used)
+        partition_infos['used_space_raw'] = partition_usage.used
+        partition_infos["free_space"] = get_scaled_size(partition_usage.free)
+        partition_infos['free_space_raw'] = partition_usage.free
+        partition_infos["space_percentage"] = partition_usage.percent
         
-        results[partition.device] = partion_infos
+        results[partition.device] = partition_infos
     return results
 
 def disk_info():
     """
     Same as disks_info()
     """
-    return disks_infos()
+    return disks_info()
 
 def disks_infos():
     """
     Same as disks_info()
     """
-    return disks_infos()
+    return disks_info()
 
 def disk_infos():
     """
     Same as disks_info()
     """
-    return disks_infos()
+    return disks_info()
 
 
 
