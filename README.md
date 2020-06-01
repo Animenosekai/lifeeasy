@@ -198,7 +198,9 @@ Arguments:
 Arguments:
 
     action_to_display: the string to be displayed.
+
     times (optional, default: 3): the number of times the 3 dots need to be shown.
+
     delay (optional, default: 0.2): the number of seconds between each dot appearance. 
 
 > Returns nothing.
@@ -220,6 +222,7 @@ Ideal for loading screens.
 Arguments:
 
     wait (optional, default: 2): the number of times before the console gets cleared (after the message is fully shown).
+
     delay (optional, default: 0.1): the delay between each character appearance.
     
 > Returns nothing or "Another instance is already running." if you already launched another instance of display() without stopping it.
@@ -268,7 +271,7 @@ Arguments:
 
 ### File Actions
 
-- **`move(filepath, new_path)`**
+- **`move_file(filepath, new_path)`**
 
 **Moves the given file to the provided new path..**
 
@@ -277,13 +280,14 @@ Also available in my file management/info center library for python: `filecenter
 Arguments:
 
     origin: the path to the file.
+
     destination: the new path
 
 > Returns 0 if success and 1 if failed (> integer)
 
 ---
 
-- **`delete(filepath)`**
+- **`delete_file(filepath)`**
 
 **Deletes the given file.**
 
@@ -298,7 +302,7 @@ Arguments:
 
 ---
 
-- **`open(filepath)`**
+- **`open_file(filepath)`**
 
 **Opens the given file in its default software.**
 
@@ -307,6 +311,22 @@ Arguments:
     file: the path to the file.
     
 > Returns 0 if success and 1 if failed (> integer)
+
+---
+
+- **`write_file(title, text, destination)`**
+
+**Writes a text file.**
+
+Arguments:
+
+    title: the title (with the extension) of the new text file.
+    
+    text: the body of the document, if this argument is a list, a line break will be made for each element of the list, if the argument is a string a line break '\n' will need to be written in the string itself.
+
+    destination (default: working dir, optional): the destination of the file (the working directory by default)
+    
+> Returns 0 if success and 1 if the text argument isn't in the right format (not a list or a string) (> integer)
 
 ---
 
@@ -321,6 +341,7 @@ Arguments:
 Arguments:
 
     bytes: the number of bytes to convert.
+    
     suffix: if you want to change the suffix of the given size.
 
 > Returns a string with the correctly scaled size (> string)
@@ -389,6 +410,22 @@ Arguments:
 > Returns the result of the division of the provided numbers or "Error: Division by zero" if a division by zero is made (> integer/float)
 
 ---
+
+- **`fibonacci(n)`**
+
+**Gives the n th number from the fibonacci sequence.**
+
+*Uses dynamic programming techniques to optimize the calculation time.*
+
+Arguments:
+
+    n: the position of the number you want to get.
+
+> Returns the n th number from the fibonacci sequence (> integer), -1 if you passed a 0, -2 if you passed a negative integer.
+
+---
+
+
 
 <a name="system"/>
 

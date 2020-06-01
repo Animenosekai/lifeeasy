@@ -12,6 +12,7 @@ import threading
 import time
 import datetime
 import platform
+import sys
 
 # imports from pip
 import requests
@@ -238,7 +239,7 @@ def stop_display():
 ## FILE ACTIONS
 
 # MOVING A FILE
-def move(origin, destination):
+def move_file(origin, destination):
     """
     Moves a given file to a given destination (you can use filecenter too) (> int)
     """
@@ -265,7 +266,7 @@ def move(origin, destination):
         return 1
 
 # DELETING A FILE
-def delete(file):
+def delete_file(file):
     """
     Deletes a given file (you can use filecenter too) (> int)
     """
@@ -293,7 +294,7 @@ def delete(file):
         return 1
 
 # OPENING A FILE
-def open(file):
+def open_file(file):
     """
     Opens a given file (you can use filecenter too) (> int)
     """
@@ -316,6 +317,40 @@ def open(file):
     except:
         return 1
 
+### WRITING A TEXT FILE
+
+def write_file(title, text, destination=None):
+    """
+    To write a text file.
+    Takes 3 arguments: title, text and destination(optional)
+    Returns an integer (0 if success, 1 if text isn't in the right format)
+    """
+    if destination == None:
+        writing_file = open(title, 'w+')
+        if type(text) == type('Example of string'):
+            writing_file.write(text)
+        elif type(text) == type(['Example', 'of', 'list']):
+            for line in text:
+                writing_file.write(line + '\n')
+        else:
+            return 1
+        writing_file.close()
+        return 0
+    else:
+        current_working_dir = working_dir()
+        change_working_dir(destination)
+        writing_file = open(title, 'w+')
+        if type(text) == type('Example of string'):
+            writing_file.write(text)
+        elif type(text) == type(['Example', 'of', 'list']):
+            for line in text:
+                writing_file.write(line + '\n')
+        else:
+            return 1
+        writing_file.close()
+        change_working_dir(current_working_dir)
+        return 0
+        
 
 ## CONVERTING
 
@@ -439,6 +474,36 @@ def divide(numbers):
             final_result = final_result / number
     return final_result
 
+### OTHER
+
+def fibonacci(n):
+    """
+    Returns the n th number of the fibonacci sequence. (> int) 
+    """
+    n = int(n)
+    if n == 0:
+        result = -1
+    elif n == 1 or n == 2:
+        result = 1
+    elif n > 2:
+        sys.setrecursionlimit(10**6)
+        memo = [None] * n
+        def fib(n,memo):
+            if memo[n - 1] != None:
+                result = memo[n - 1]
+            elif n == 1 or n == 2:
+                result = 1
+            elif n > 2:
+                result = fib(n-1, memo) + fib(n-2, memo)
+            else:
+                result = "Not a positive number"
+            memo[n - 1] = result
+            #print(result)
+            return(result)
+        result = fib(n, memo)
+    else:
+        result = -2
+    return(result)
 
 ## SYSTEM AND HARDWARE INFO
 
