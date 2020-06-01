@@ -725,6 +725,20 @@ Arguments:
 
 ---
 
+- **`network_interfaces()`**
+
+**Returns the IP Addresss/MAC address, Netmask and Brodcast IP/MAC for each network interfaces.**
+
+Argument:
+
+    there is no argument.
+
+> Returns a dict with the IP Addresss/MAC address, Netmask and Brodcast IP/MAC for each network interfaces (> dict)
+
+> The returned dict is following this schema: {'en1': {'ip': '0.0.0.0', 'netmask': '0.0.0.0', 'broadcast_ip': '0.0.0.0'}, 'eth0': {'mac': '00:00:00:00:00:00', 'netmask': None, 'broadcast_mac': 'ff:ff:ff:ff:ff:ff'}}
+
+---
+
 - **`net_total_sent()`**
 
 **Returns the total amount of data sent over the network.**
@@ -749,17 +763,6 @@ Arguments:
 
 ---
 
-- **`network_interfaces()`**
-
-**Returns the IP Addresss/MAC address, Netmask and Brodcast IP/MAC for each network interfaces.**
-
-Argument:
-
-    there is no argument.
-
-> Returns a dict with the IP Addresss/MAC address, Netmask and Brodcast IP/MAC for each network interfaces (> dict)
-
-> The returned dict is following this schema: {'en1': {'ip': '0.0.0.0', 'netmask': '0.0.0.0', 'broadcast_ip': '0.0.0.0'}, 'eth0': {'mac': '00:00:00:00:00:00', 'netmask': None, 'broadcast_mac': 'ff:ff:ff:ff:ff:ff'}}
 
 <a name="advanced"/>
 
