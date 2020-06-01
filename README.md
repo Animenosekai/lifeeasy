@@ -14,6 +14,7 @@
    - [File Actions](#file)
    - [Calculations](#calculations)
    - [System Info](#system)
+   - [Advanced] (#advanced)
 - [Development](#development) 
 - [Legals](#legals)
  
