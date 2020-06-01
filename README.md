@@ -49,7 +49,7 @@ Arguments:
 
     seconds: the amount of time to wait (in seconds).
 
-> Returns nothing
+> Returns 0 if success 1 if failed (> integer)
 
 ---
 - **`clear()`**
@@ -60,7 +60,7 @@ Arguments:
 
     there is no argument to pass.
     
-> Returns nothing.
+> Returns 0 if success 1 if failed (> integer)
 
 ---
 - **`change_working_dir(path)`**
@@ -71,7 +71,7 @@ Arguments:
 
     new_dir: the path of the new working directory.
 
-> Returns 0 if success, 1 if failed.
+> Returns 0 if success, 1 if failed (> integer)
 
 ---
 - **`working_dir()`**
@@ -82,7 +82,7 @@ Arguments:
 
     there is no argument.
 
-> Returns the path of the working directory.
+> Returns the path of the working directory (> string)
 
 ---
 - **`command_output(command)`**
@@ -93,7 +93,7 @@ Arguments:
 
     command: a string of command to be executed.
 
-> Returns the command output/result.
+> Returns the command output/result (> mostly string)
 
 ---
 - **`command(command)`**
@@ -104,7 +104,7 @@ Arguments:
 
     command: a string of command to be executed.
 
-> Returns the command response code (generally 0 if success).
+> Returns the command response code (generally 0 if success) (> integer)
 
 ---
 - **`request(url, method, parameters, data, headers, json_body)`**
@@ -114,10 +114,15 @@ Arguments:
 Arguments:
 
     url: a string with the url of the request.
+    
     method: a string with the http method to use with the request (see below for a list of compatible methods)
+    
     parameters (optional): parameters to be sent with a GET request.
+    
     data (optional): the data to be sent with the POST, PATCH and PUT request
+    
     headers (optional): the headers to be sent with the GET, POST, PATCH, DELETE and PUT request (i.e. the API Key).
+    
     json_body (optional): the json body of the request for POST, PATCH and PUT requests.
 
 > Returns a <Response> type value (see the [Requests module documentation]
@@ -141,7 +146,7 @@ Arguments:
 
     there is no argument.
 
-> Returns a string with today's date.
+> Returns a string with today's date (> string)
 
 ---
 
@@ -153,7 +158,7 @@ Arguments:
 
     there is no argument.
 
-> Returns a string with the current time.
+> Returns a string with the current time (> string)
 ---
 
 - **`timezone()`**
@@ -164,7 +169,7 @@ Arguments:
 
     there is no argument.
 
-> Returns a string with the system timezone.
+> Returns a string with the system timezone (> string)
 
 ---
 
@@ -176,7 +181,7 @@ Arguments:
 
     there is no argument.
 
-> Returns a string with the number of hours from greenwhich.
+> Returns a string with the number of hours from greenwhich (> string)
 
 <a name="display"/>
 
@@ -231,7 +236,7 @@ Arguments:
 
     title_string: the string to be displayed as the title for display()
 
-> Returns nothing.
+> Returns the given title (> string)
 
 ---
 
@@ -243,7 +248,7 @@ Arguments:
 
     body_list: a list of string to be displayed as the body for display(). Each new element in the list means a line break.
 
-> Returns nothing.
+> Returns the given body (> list)
 
 ---
 
@@ -273,7 +278,7 @@ Arguments:
     origin: the path to the file.
     destination: the new path
 
-> Returns 0 if success and 1 if failed
+> Returns 0 if success and 1 if failed (> integer)
 
 ---
 
@@ -287,7 +292,7 @@ Arguments:
 
      file: the path of the file
 
-> Returns 0 if success, 1 if failed at getting the file, 2 if failed at deleting a file and 3 if failed at deleting a directory.
+> Returns 0 if success, 1 if failed at getting the file, 2 if failed at deleting a file and 3 if failed at deleting a directory (> integer)
 
 
 ---
@@ -300,7 +305,7 @@ Arguments:
 
     file: the path to the file.
     
-> Returns 0 if success and 1 if failed
+> Returns 0 if success and 1 if failed (> integer)
 
 ---
 
@@ -308,7 +313,7 @@ Arguments:
 
 ### Calculations and Conversions
 
-- **`get_size_from_bytes(bytes, suffix)`**
+- **`get_scaled_size(bytes, suffix)`**
 
 **To scale bytes to its proper format.**
 
@@ -317,7 +322,7 @@ Arguments:
     bytes: the number of bytes to convert.
     suffix: if you want to change the suffix of the given size.
 
-> Returns a string with the correctly scales size.
+> Returns a string with the correctly scaled size (> string)
 
 ---
 
@@ -332,7 +337,7 @@ Arguments:
 
     wavelength: the wavelength of light to convert.
 
-> Returns a list of 3 values R, G and B.
+> Returns a list of 3 values R, G and B (> list)
 
 ---
 
@@ -344,7 +349,7 @@ Arguments:
 
     numbers: a list of numbers to make the sum of.
 
-> Returns the result of the sum of numbers.
+> Returns the result of the sum of numbers (> integer/float)
 
 ---
 
@@ -356,7 +361,7 @@ Arguments:
 
     numbers: a list of numbers to make the substraction of.
 
-> Returns the result of substraction of the provided list of numbers.
+> Returns the result of substraction of the provided list of numbers (> integer/float)
 
 ---
 
@@ -368,7 +373,7 @@ Arguments:
 
     numbers: a list of numbers to multiply.
 
-> Returns the result of the multiplication of the provided list of numbers.
+> Returns the result of the multiplication of the provided list of numbers (> integer/float)
 
 ---
 
@@ -380,7 +385,7 @@ Arguments:
 
     numbers: a list of numbers to divide.
 
-> Returns the result of the division of the provided numbers or "Error: Division by zero" if a division by zero is made.
+> Returns the result of the division of the provided numbers or "Error: Division by zero" if a division by zero is made (> integer/float)
 
 ---
 
@@ -392,11 +397,17 @@ Arguments:
 
 **Returns the system name.**
 
+    Example:
+    'nt': Windows
+    'Darwin': macOS
+
 Arguments:
 
     there is no argument.
 
-> Returns the system name.
+> Returns the system name (> string)
+
+---
 
 - **`node()`**
 
@@ -406,7 +417,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the node name.
+> Returns the node name (> string)
+
+---
 
 - **`release()`**
 
@@ -416,7 +429,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the system release name.
+> Returns the system release name (> string)
+
+---
 
 - **`version()`**
 
@@ -426,7 +441,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the system version.
+> Returns the system version (> string)
+
+---
 
 - **`machine()`**
 
@@ -436,7 +453,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the machine name.
+> Returns the machine name (> string)
+
+---
 
 - **`processor()`**
 
@@ -446,7 +465,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the CPU name.
+> Returns the CPU name (> string)
+
+---
 
 - **`boot_time()`**
 
@@ -456,7 +477,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the boot time as a string.
+> Returns the boot time as a string (> string)
+
+---
 
 - **`number_of_physical_cores()`**
 
@@ -466,7 +489,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the number of physical CPU Cores.
+> Returns the number of physical CPU Cores (> integer)
+
+---
 
 - **`number_of_cores()`**
 
@@ -476,7 +501,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the number of CPU cores.
+> Returns the number of CPU cores (> integer)
+
+---
 
 - **`cpu_max_frequency()`**
 
@@ -486,7 +513,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the CPU maximum frequency.
+> Returns the CPU maximum frequency in Mhz (> integer)
+
+---
 
 - **`cpu_min_frequency()`**
 
@@ -496,7 +525,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the CPU minimum frequency.
+> Returns the CPU minimum frequency in Mhz (> integer)
+
+---
 
 - **`cpu_current_frequency()`**
 
@@ -506,7 +537,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the current CPU (processor) frequency.
+> Returns the current CPU (processor) frequency in Mhz (> integer)
+
+---
 
 - **`cpu_usage_per_core()`**
 
@@ -516,7 +549,9 @@ Arguments:
 
     there is no argument.
 
-> Returns a dictionnary with the percentage of processor usage for each core.
+> Returns a dictionnary with the percentage of processor usage for each core (> dict)
+
+---
 
 - **`cpu_usage()`**
 
@@ -526,8 +561,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the CPU current usage in percent.
+> Returns the CPU current usage in percent (> float)
 
+---
 
 - **`total_ram()`**
 
@@ -537,7 +573,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the total RAM installed.
+> Returns the total RAM installed scaled in its proper format (> string)
+
+---
 
 - **`available_ram()`**
 
@@ -547,7 +585,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the available RAM.
+> Returns the available RAM in its proper format (> string)
+
+---
 
 - **`used_ram()`**
 
@@ -557,7 +597,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the used RAM.
+> Returns the used RAM in its proper format  (> string)
+
+---
 
 - **`used_ram_percentage()`**
 
@@ -567,7 +609,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the used RAM in percent.
+> Returns the used RAM in percent (> float)
+
+---
 
 - **`total_swap_memory()`**
 
@@ -577,7 +621,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the total SWAP memory (if available).
+> Returns the total SWAP memory (if available) in its proper format (> string)
+
+---
 
 - **`free_swap_memory()`**
 
@@ -587,7 +633,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the free SWAP memory (if available).
+> Returns the free SWAP memory (if available) in its proper format (> string)
+
+---
 
 - **`used_swap_memory()`**
 
@@ -597,7 +645,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the used SWAP memory (if available).
+> Returns the used SWAP memory (if available) in its proper format (> string)
+
+---
 
 - **`used_swap_memory_percentage()`**
 
@@ -607,7 +657,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the used SWAP memory in percent (if available).
+> Returns the used SWAP memory in percent (if available) (> float).
+
+---
 
 - **`disks_infos()`**
 
@@ -617,28 +669,33 @@ Arguments:
 
     there is no argument.
 
-> Returns a dictionnary of infos for each disks mounted.
+> Returns a dictionnary of infos for each disks mounted (> dict)
+
+---
 
 - **`disk_total_read()`**
 
-**Returns the startup disk total read.**
+**Returns the startup disk total amount of data read.**
 
 Arguments:
 
     there is no argument.
 
-> Returns the startup disk total read.
+> Returns the startup disk total read in a human readeable format (> string)
+
+---
 
 - **`disk_total_write()`**
 
-**Returns the startup disk total write.**
+**Returns the startup disk total amount of data written.**
 
 Arguments:
 
     there is no argument.
 
-> Returns the startup disk total write.
+> Returns the startup disk total write in a human readeable format (> string)
 
+---
 
 - **`ip_address()`**
 
@@ -648,7 +705,9 @@ Arguments:
 
     there is no argument.
 
-> Returns the an IP address.
+> Returns the an IP address (> string)
+
+---
 
 - **`number_of_network_interfaces()`**
 
@@ -658,28 +717,206 @@ Arguments:
 
     there is no argument.
 
-> Returns the number of network interfaces.
+> Returns the number of network interfaces (> integer)
 
-- **`net_total_bytes_sent()`**
+---
 
-**Returns the total bytes sent over the network.**
+- **`net_total_sent()`**
 
-Arguments:
-
-    there is no argument.
-
-> Returns the total bytes sent over the network.
-
-- **`net_total_bytes_received()`**
-
-**Returns the total bytes sent over the network.**
+**Returns the total amount of data sent over the network.**
 
 Arguments:
 
     there is no argument.
 
-> Returns the total bytes sent over the network.
+> Returns the total amount of data sent over the network in its proper format (> string)
 
+---
+
+- **`net_total_received()`**
+
+**Returns the total amount of data sent over the network.**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the total amount of data received from the network scaled in its proper format (> string)
+
+---
+
+- **`network_interfaces()`**
+
+**Returns the IP Addresss/MAC address, Netmask and Brodcast IP/MAC for each network interfaces.**
+
+Argument:
+
+    there is no argument.
+
+> Returns a dict with the IP Addresss/MAC address, Netmask and Brodcast IP/MAC for each network interfaces (> dict)
+
+<a name="advanced"/>
+
+### Advanced
+
+---
+
+- **`today_raw()`**
+
+**Returns the current date as a datetime object.**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the current date as a datetime object (> datetime)
+
+---
+
+- **`current_time_raw()`**
+
+**Returns the current time as a datetime object.**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the current time as a datetime object (> datetime)
+
+---
+
+- **`boot_time_timestamp()`**
+
+**Returns the boot time expressed in seconds.**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the boot time expressed in seconds (> integer/float)
+
+---
+
+- **`available_ram_raw()`**
+
+**Returns the available RAM.**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the available RAM in bytes (> integer)
+
+---
+
+- **`total_ram_raw()`**
+
+**Returns the total RAM installed.**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the total RAM installed in bytes (> integer)
+
+---
+
+- **`used_ram_raw()`**
+
+**Returns the used RAM.**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the used RAM in bytes (> integer)
+
+---
+
+- **`free_swap_memory_raw()`**
+
+**Returns the free SWAP memory if available.**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the free SWAP memory if available in bytes (> integer)
+
+---
+
+- **`total_swap_memory_raw()`**
+
+**Returns the total SWAP memory if available.**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the total SWAP memory if available in bytes (> integer)
+
+---
+
+- **`used_swap_memory_raw()`**
+
+**Returns the used SWAP memory if available.**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the used SWAP memory if available in bytes (> integer)
+
+---
+
+- **`disk_total_read_raw()`**
+
+**Returns the total amount of data read for the startup disk in bytes.**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the total amount of data read for the startup disk in bytes (> integer)
+
+---
+
+- **`disk_total_write_raw()`**
+
+**Returns the total amount of data written for the startup disk in bytes).**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the total amount of data written for the startup disk in bytes (> integer)
+
+---
+
+- **`net_total_sent_raw()`**
+
+**Returns the total amount of data received over the network (in bytes).**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the total amount of data received over the network (in bytes) (> integer)
+
+---
+
+- **`net_total_received_raw()`**
+
+**Returns the IP Addresss/MAC address, Netmask and Brodcast IP/MAC for each network interfaces.**
+
+Arguments:
+
+    there is no argument.
+
+> Returns the IP Addresss/MAC address, Netmask and Brodcast IP/MAC for each network interfaces (> integer)
+
+
+---
 
 <a name="development"/>
 

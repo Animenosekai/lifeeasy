@@ -185,6 +185,7 @@ def display_title(title_string):
     """
     global title
     title = title_string
+    return title_string
 
 def display_body(body_list):
     """
@@ -193,6 +194,7 @@ def display_body(body_list):
     """
     global body
     body = body_list
+    return body_list
 
 def display(wait=2, delay=0.1):
     """
@@ -318,7 +320,7 @@ def open(file):
 ## CONVERTING
 
 # CONVERTING SIZE FROM BYTES
-def get_size_from_bytes(bytes, suffix="B"):
+def get_scaled_size(bytes, suffix="B"):
     """
     Credit to PythonCode for this function.
     > https://www.thepythoncode.com/article/get-hardware-system-information-python
@@ -539,19 +541,19 @@ def total_ram():
     """
     Returns the total RAM installed, in a readeable way (> string)
     """
-    return get_size_from_bytes(psutil.virtual_memory().total)
+    return get_scaled_size(psutil.virtual_memory().total)
 
 def available_ram():
     """
     Returns the available RAM, in a readeable way (> string)
     """
-    return get_size_from_bytes(psutil.virtual_memory().available)
+    return get_scaled_size(psutil.virtual_memory().available)
 
 def used_ram():
     """
     Returns the used RAM, in a readeable way (> string)
     """
-    return get_size_from_bytes(psutil.virtual_memory().used)
+    return get_scaled_size(psutil.virtual_memory().used)
 
 def used_ram_percentage():
     """
@@ -582,19 +584,19 @@ def total_swap_memory():
     """
     Returns the SWAP memory if available, in a readeabl way (> string)
     """
-    return get_size_from_bytes(psutil.swap_memory().total)
+    return get_scaled_size(psutil.swap_memory().total)
 
 def free_swap_memory():
     """
     Returns the free SWAP memory if available, in a readeable way (> string)
     """
-    return get_size_from_bytes(psutil.swap_memory().free)
+    return get_scaled_size(psutil.swap_memory().free)
 
 def used_swap_memory():
     """
     Returns the used SWAP memory if available, in a readeable way (> string)
     """
-    return get_size_from_bytes(psutil.swap_memory().used)
+    return get_scaled_size(psutil.swap_memory().used)
 
 def used_swap_memory_percentage():
     """
@@ -638,10 +640,10 @@ def disks_infos():
             # isn't ready
             results[partition.device] = partion_infos
             continue
-        partion_infos["total_size"] = get_size_from_bytes(partition_usage.total) 
-        partion_infos["used_space"] = get_size_from_bytes(partition_usage.used)
-        partion_infos["free_space"] = get_size_from_bytes(partition_usage.free)
-        partion_infos["space_percentage"] = get_size_from_bytes(partition_usage.percent)
+        partion_infos["total_size"] = get_scaled_size(partition_usage.total) 
+        partion_infos["used_space"] = get_scaled_size(partition_usage.used)
+        partion_infos["free_space"] = get_scaled_size(partition_usage.free)
+        partion_infos["space_percentage"] = get_scaled_size(partition_usage.percent)
         
         results[partition.device] = partion_infos
     return results
@@ -662,13 +664,13 @@ def disk_total_read():
     """
     Returns the total amount of data read for the startup disk in a readeable format (> string)
     """
-    return get_size_from_bytes(psutil.disk_io_counters().read_bytes)
+    return get_scaled_size(psutil.disk_io_counters().read_bytes)
 
 def disk_total_write():
     """
     Returns the total amount of data written for the startup disk in a readeable format (> string)
     """
-    return get_size_from_bytes(psutil.disk_io_counters().write_bytes)
+    return get_scaled_size(psutil.disk_io_counters().write_bytes)
 
 def ip_address():
     """
@@ -694,25 +696,25 @@ def number_of_network_interfaces():
             number += 1
     return number
 
-def net_total_bytes_sent():
+def net_total_sent():
     """
     Returns the total amount of data sent over the network (> string)
     """
-    return get_size_from_bytes(psutil.net_io_counters().bytes_sent)
+    return get_scaled_size(psutil.net_io_counters().bytes_sent)
                 
-def net_total_bytes_received():
+def net_total_received():
     """
     Returns the total amount of data received over the network (> string)
     """
-    return get_size_from_bytes(psutil.net_io_counters().bytes_recv)
+    return get_scaled_size(psutil.net_io_counters().bytes_recv)
 
-def net_total_bytes_sent_raw():
+def net_total_sent_raw():
     """
     Returns the total amount of data sent over the network (in bytes) (> int)
     """
     return psutil.net_io_counters().bytes_sent
                 
-def net_total_bytes_received_raw():
+def net_total_received_raw():
     """
     Returns the total amount of data received over the network (in bytes) (> int)
     """
