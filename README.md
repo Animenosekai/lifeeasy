@@ -3,6 +3,12 @@
  ### **A quick python toolbox that will let you access various multi-line and multi-imports function with just a single line of code!**
  
 [![PyPI version](https://badge.fury.io/py/lifeeasy.svg)](https://pypi.org/project/lifeeasy)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/lifeeasy)](https://pypistats.org/packages/lifeeasy)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/lifeeasy)](https://pypi.org/project/lifeeasy/)
+[![PyPI - Status](https://img.shields.io/pypi/status/lifeeasy)](https://pypi.org/project/lifeeasy/)
+[![GitHub - License](https://img.shields.io/github/license/Animenosekai/lifeeasy)](https://github.com/Animenosekai/lifeeasy/blob/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues-raw/Animenosekai/lifeeasy)](https://github.com/Animenosekai/lifeeasy/issues)
+[![GitHub top language](https://img.shields.io/github/languages/top/Animenosekai/lifeeasy)](https://github.com/Animenosekai/lifeeasy)
 
 ## Table of Content
 - [Installation](#installation)  
