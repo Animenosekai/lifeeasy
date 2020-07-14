@@ -4,19 +4,25 @@
 ##### for Python 3
 #####
 
-
 ## IMPORTS
 import subprocess
 import os
+import shutil
 import threading
 import time
 import datetime
 import platform
 import sys
+import base64
+from io import BytesIO
+import json
 
 # imports from pip
 import requests
 import psutil
+import imagehash
+from PIL import Image, ImageEnhance, ImageOps
+import numpy as np
 
 #VARIABLES
 stop_displaying = False
@@ -69,15 +75,29 @@ def command_output(command_list):
     """
     Executes a command and returns the output of the command. (> mostly string)
     """
-    result = subprocess.check_output(command, universal_newlines=True)
-    return result
+    if type(command_list) == type(['hey', 'hey']):
+        result = subprocess.check_output(command_list, universal_newlines=True)
+        return result
+    elif type(command_list) == type('hey hey'):
+        commands = command_list.split(' ')
+        result = subprocess.check_output(commands, universal_newlines=True)
+        return result
+    else:
+        return 'error'
 
 def command(command):
     """
     Executes a command and returns the response code. (> mostly int)
     """
-    result = os.system(command)
-    return result
+    if type(command) == type(['hey', 'hey']):
+        result = subprocess.call(command)
+        return result
+    elif type(command) == type('hey hey'):
+        commands = command.split(' ')
+        result = subprocess.check_output(commands)
+        return result
+    else:
+        return 1
 
 ## MAKE HTTP REQUESTS
 def request(url, method, parameters=None, data=None, headers=None, json_body=None):
@@ -111,6 +131,34 @@ def request(url, method, parameters=None, data=None, headers=None, json_body=Non
     else:
         return "Sorry but this HTTP Request method is not available yet."
 
+def request_statuscode(url, method='get', parameters=None, data=None, headers=None, json_body=None):
+    """
+    Makes an HTTP request and returns its status code.
+    This function needs at least an url.
+    """
+    if method.lower() == 'get':
+        r = requests.get(url=url, params=parameters, headers=headers)
+        return r.status_code
+    elif method.lower() == 'post':
+        r = requests.post(url=url, data=data, json=json_body, headers=headers)
+        return r.status_code
+    elif method.lower() == 'delete':
+        r = requests.delete(url=url, headers=headers)
+        return r.status_code
+    elif method.lower() == 'patch':
+        r = requests.patch(url=url, data=data, headers=headers, json=json_body)
+        return r.status_code
+    elif method.lower() == 'put':
+        r = requests.put(url=url, data=data, headers=headers, json=json_body)
+        return r.status_code
+    elif method.lower() == 'head':
+        r = requests.head(url=url)
+        return r.status_code
+    elif method.lower() == 'options':
+        r = requests.options(url=url)
+        return r.status_code
+    else:
+        return "Sorry but this HTTP Request method is not available yet."
 
 ## DATE AND TIME
 
@@ -165,16 +213,17 @@ def display_action(action_to_display, times=3, delay=0.2):
     Warning: this is a blocking function, which means the program will only continue when the message disappear.
     To display a message with a non-blocking function, try display().
     """
-    for _ in range(times-1):
-        clear()
-        print(action_to_display + ".")
+    for _ in range(times):
+        #clear()
+        print(action_to_display + ".", end="\r")
+        sleep(delay)
+        #clear()
+        print(action_to_display + "..", end="\r")
+        sleep(delay)
+        #clear()
+        print(action_to_display + "...", end="\r")
         sleep(delay)
         clear()
-        print(action_to_display + "..")
-        sleep(delay)
-        clear()
-        print(action_to_display + "...")
-        sleep(delay)
 
 
 ## DISPLAY IN ANOTHER THREAD
@@ -243,13 +292,15 @@ def move_file(origin, destination):
     """
     Moves a given file to a given destination (you can use filecenter too) (> int)
     """
+    correct_path_of_origin = origin
+    correct_path_of_destination = destination
     indexes_of_slash = [i for i, ltr in enumerate(origin) if ltr == "\\"]
     number_of_iterations = 0
     for index in indexes_of_slash:
         character_after_slash = origin[index + 1 - number_of_iterations]
         #print(character_after_slash)
         if character_after_slash == ' ' or character_after_slash == '/':
-            origin = origin[:index - number_of_iterations] + origin[index + 1 - number_of_iterations:]
+            correct_path_of_origin = origin[:index - number_of_iterations] + origin[index + 1 - number_of_iterations:]
             number_of_iterations += 1
     indexes_of_slash = [i for i, ltr in enumerate(destination) if ltr == "\\"]
     number_of_iterations = 0
@@ -257,7 +308,7 @@ def move_file(origin, destination):
         character_after_slash = destination[index + 1 - number_of_iterations]
         #print(character_after_slash)
         if character_after_slash == ' ' or character_after_slash == '/':
-            destination = destination[:index - number_of_iterations] + destination[index + 1 - number_of_iterations:]
+            correct_path_of_destination = destination[:index - number_of_iterations] + destination[index + 1 - number_of_iterations:]
             number_of_iterations += 1
     try:
         shutil.move(correct_path_of_origin, correct_path_of_destination)
@@ -317,16 +368,29 @@ def open_file(file):
     except:
         return 1
 
+def make_dir(path_of_new_dir):
+    """
+    Makes a directory at the given path.
+    """
+    try:
+        os.makedirs(path_of_new_dir)
+        return path_of_new_dir
+    except:
+        return 'Error while making the new folder'
+
 ### WRITING A TEXT FILE
 
-def write_file(title, text, destination=None):
+def write_file(title, text, destination=None, append=False):
     """
     To write a text file.
     Takes 3 arguments: title, text and destination(optional)
     Returns an integer (0 if success, 1 if text isn't in the right format)
     """
     if destination == None:
-        writing_file = open(title, 'w+')
+        if not append:
+            writing_file = open(title, 'w+')
+        else:
+            writing_file = open(title, 'a+')
         if type(text) == type('Example of string'):
             writing_file.write(text)
         elif type(text) == type(['Example', 'of', 'list']):
@@ -339,7 +403,10 @@ def write_file(title, text, destination=None):
     else:
         current_working_dir = working_dir()
         change_working_dir(destination)
-        writing_file = open(title, 'w+')
+        if not append:
+            writing_file = open(title, 'w+')
+        else:
+            writing_file = open(title, 'a+')
         if type(text) == type('Example of string'):
             writing_file.write(text)
         elif type(text) == type(['Example', 'of', 'list']):
@@ -350,7 +417,25 @@ def write_file(title, text, destination=None):
         writing_file.close()
         change_working_dir(current_working_dir)
         return 0
-        
+
+def read_file(file_path):
+    reading_file = open(file_path)
+    result = reading_file.read()
+    reading_file.close()
+    return result
+
+def read_file_line(file_path, lines_to_read=1):
+    results = []
+    if type(lines_to_read) == type(1):
+        reading_lines = [lines_to_read]
+    elif type(lines_to_read) == type([1]):
+        reading_lines = lines_to_read
+    reading_file = open(file_path)
+    for position, line in enumerate(reading_file):
+        if position + 1 in reading_lines:
+            results.append(line) 
+    reading_file.close()
+    return results
 
 ## CONVERTING
 
@@ -504,6 +589,262 @@ def fibonacci(n):
     else:
         result = -2
     return(result)
+
+
+def json_to_dict(element):
+    try:
+        return json.loads(element)
+    except:
+        return {'error': 'An error occured while converting your json string.'}
+
+def dict_to_json_string(element):
+    try:
+        return json.dumps(element)
+    except:
+        return 'An error occured while converting your dict.'
+
+def hash_image(image, algorithm='aHash'):
+    """
+    Hashes the given image with the chosen algorithm (average hash by default)
+    © Anime no Sekai - 2020
+    Project Erina
+    """
+    image_hash = ''
+    if algorithm == 'aHash':
+        image_hash = imagehash.average_hash(image) # Needs to be a PIL instance
+    elif algorithm == 'cHash':
+        image_hash = imagehash.colorhash(image)
+    elif algorithm == 'dHash':
+        image_hash = imagehash.dhash(image)
+    elif algorithm == 'dHash_vertical':
+        image_hash = imagehash.dhash_vertical(image)
+    elif algorithm == 'pHash':
+        image_hash = imagehash.phash(image)
+    elif algorithm == 'pHash_simple':
+        image_hash = imagehash.phash_simple(image)
+    elif algorithm == 'wHash':
+        image_hash = imagehash.whash(image)
+    return(image_hash)
+
+
+def hash_image_from_url(image_url, algorithm='aHash'):
+    """
+    Hashes the given image from the image url with the chosen algorithm (average hash by default)
+    © Anime no Sekai - 2020
+    Project Erina
+    """
+    image_request = request(image_url, 'get')
+    downloaded_image = Image.open(BytesIO(image_request.content)) # Open the downloaded image as a PIL Image instance
+    return(hash_image(image=downloaded_image, algorithm=algorithm))
+
+def hash_image_from_path(image_path, algorithm='aHash'):
+    """
+    Hashes the given image from his path with the chosen algorithm (average hash by default)
+    © Anime no Sekai - 2020
+    Project Erina
+    """
+    image = Image.open(image_path)
+    return(hash_image(image=image, algorithm=algorithm))
+
+def base64_from_image(image_path):
+    image = open(image_path, 'rb')
+    image_content = image.read()
+    image.close()
+    return(base64.b64encode(image_content).decode('ascii'))
+
+def string_to_base64(string):
+    string_bytes = string.encode('ascii')
+    base64_encoded = base64.b64encode(string_bytes)
+    base64string = base64_encoded.decode('ascii')
+    return base64string
+
+def string_to_ascii(string):
+    string_bytes = string.encode('ascii')
+    return string_bytes
+
+def ascii_to_string(ascii_element):
+    string_decoded = ascii_element.decode('ascii')
+    return string_decoded
+
+
+### IMAGE ENHANCEMENT
+def image_brightness_enhancement(image_path, output_name, enhancement_factor=1):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    enhancer = ImageEnhance.Brightness(original_image)
+    enhanced = enhancer.enhance(enhancement_factor)
+    enhanced.save(destination_path + output_name)
+
+def image_contrast_enhancement(image_path, output_name, enhancement_factor=1):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    enhancer = ImageEnhance.Contrast(original_image)
+    enhanced = enhancer.enhance(enhancement_factor)
+    enhanced.save(destination_path + output_name)
+
+def image_color_enhancement(image_path, output_name, enhancement_factor=1):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    enhancer = ImageEnhance.Color(original_image)
+    enhanced = enhancer.enhance(enhancement_factor)
+    enhanced.save(destination_path + output_name)
+
+def image_grasyscale(image_path, output_name):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    image_grayscale = original_image.convert('L')
+    image_grayscale.save(destination_path + output_name)
+
+def image_rgb(image_path, output_name):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    image_rgb = original_image.convert('RGB')
+    image_rgb.save(destination_path + output_name)
+
+def image_resize(image_path, output_name, new_size):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    image_resized = original_image.resize(new_size)
+    image_resized.save(destination_path + output_name)
+
+def image_resize_with_same_aspect_ratio(image_path, output_name, new_size):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    image_thumbnail = original_image.copy()
+    image_thumbnail.thumbnail(new_size)
+    image_thumbnail.save(destination_path + output_name)
+
+def image_crop(image_path, output_name, crop_size):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    image_cropped = original_image.crop(crop_size)
+    image_cropped.save(destination_path + output_name)
+
+def image_to_jpeg(image_path, output_name, jpeg_quality):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    original_image.save(destination_path + output_name, quality=jpeg_quality)
+
+def image_watermark(image_path, output_name, watermark_path):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    watermark = Image.open(watermark_path)
+    watermarked = original_image.copy()
+    position = ((watermarked.width - watermark.width), (watermarked.height - watermark.height))
+    watermarked.paste(watermark, position, watermark)
+    watermarked.save(destination_path + output_name)
+
+def image_invert(image_path, output_name):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    image_inverted = ImageOps.invert(original_image)
+    image_inverted.save(destination_path + output_name)
+
+
+def _givenoisy(noise_typ, image):
+    '''
+    ** INTERNAL FUNCTION **
+    
+    Parameters
+    ----------
+    image : ndarray
+        Input image data. Will be converted to float.
+    mode : str
+        One of the following strings, selecting the type of noise to add:
+
+        'gauss'     Gaussian-distributed additive noise.
+        'poisson'   Poisson-distributed noise generated from the data.
+        's&p'       Replaces random pixels with 0 or 1.
+        'speckle'   Multiplicative noise using out = image + n*image,where
+                    n is uniform noise with specified mean & variance.
+
+    By Shubham Pachori
+    > https://stackoverflow.com/questions/22937589/how-to-add-noise-gaussian-salt-and-pepper-etc-to-image-in-python-with-opencv
+    '''
+    if noise_typ == "gauss":
+        row,col,ch= image.shape
+        mean = 0
+        var = 0.1
+        sigma = var**0.5
+        gauss = np.random.normal(mean,sigma,(row,col,ch))
+        gauss = gauss.reshape(row,col,ch)
+        noisy = image + gauss
+        return noisy
+    elif noise_typ == "s&p":
+        row,col,ch = image.shape
+        s_vs_p = 0.5
+        amount = 0.004
+        out = np.copy(image)
+        # Salt mode
+        num_salt = np.ceil(amount * image.size * s_vs_p)
+        coords = [np.random.randint(0, i - 1, int(num_salt))
+                for i in image.shape]
+        out[coords] = 1
+
+        # Pepper mode
+        num_pepper = np.ceil(amount* image.size * (1. - s_vs_p))
+        coords = [np.random.randint(0, i - 1, int(num_pepper))
+                for i in image.shape]
+        out[coords] = 0
+        return out
+    elif noise_typ == "poisson":
+        vals = len(np.unique(image))
+        vals = 2 ** np.ceil(np.log2(vals))
+        noisy = np.random.poisson(image * vals) / float(vals)
+        return noisy
+    elif noise_typ =="speckle":
+        row,col,ch = image.shape
+        gauss = np.random.randn(row,col,ch)
+        gauss = gauss.reshape(row,col,ch)        
+        noisy = image + image * gauss
+        return noisy
+
+def image_gaussian_noise(image_path, output_name):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    numpy_array_image = np.asarray(original_image)
+    gaussian_array = _givenoisy('gauss', numpy_array_image)
+    gaussian = Image.fromarray((gaussian_array * 255).astype(np.uint8))
+    gaussian.save(destination_path + output_name)
+
+def image_salt_and_pepper_noise(image_path, output_name):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    numpy_array_image = np.asarray(original_image)
+    salt_and_pepper_array = _givenoisy('s&p', numpy_array_image)
+    salt_and_pepper = Image.fromarray((salt_and_pepper_array * 255).astype(np.uint8))
+    salt_and_pepper.save(destination_path + output_name)
+
+def image_poisson_noise(image_path, output_name):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    numpy_array_image = np.asarray(original_image)
+    poisson_array = _givenoisy('poisson', numpy_array_image)
+    poisson = Image.fromarray((poisson_array * 255).astype(np.uint8))
+    poisson.save(destination_path + output_name)
+
+def image_speckle_noise(image_path, output_name):
+    filename = os.path.basename(image_path)
+    destination_path = image_path[:-len(filename)]
+    original_image = Image.open(image_path)
+    numpy_array_image = np.asarray(original_image)
+    speckle_array = _givenoisy('speckle', numpy_array_image)
+    speckle = Image.fromarray((speckle_array * 255).astype(np.uint8))
+    speckle.save(destination_path + output_name)
 
 ## SYSTEM AND HARDWARE INFO
 
