@@ -34,12 +34,12 @@ You can install this library with **`PIP`**, the Python Package Manager
 
 Simply type `pip install lifeeasy` in your terminal/command-line prompt.
 
-> This library has two third-pary dependencies installed automatically with `pip install lifeeasy`.
+> This library has five third-pary dependencies installed automatically with `pip install lifeeasy`.
 
 <a name="whatis"/>
 
 ## What is LifeEasy?
-File Center is a simple library to make developers life easier with various of common, everyday functions callable with just one single line of code!.
+LifeEasy is a simple library to make developers life easier with various of common, everyday functions callable with just one single line of code!.
 > You just have to import it to your project! `import filecenter`
 
 
