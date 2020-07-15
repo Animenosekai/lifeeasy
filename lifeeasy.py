@@ -1,4 +1,4 @@
-#####                           LIFEEASY
+#####                                       LIFEEASY
 #####
 ##### © Anime no Sekai - 2020
 ##### for Python 3
@@ -37,7 +37,7 @@ def sleep(seconds):
     """
     try:
         time.sleep(seconds)
-        return 0
+        return seconds
     except:
         return 1
 
@@ -45,6 +45,7 @@ def sleep(seconds):
 def clear():
     """
     Clears the console. (> int)
+    Returns 0 if succeded, 1 if failed. (> int)
     """
     try:
         os.system('cls' if os.name == 'nt' else 'clear')
@@ -55,12 +56,12 @@ def clear():
 ## CHANGE WORKING DIR
 def change_working_dir(new_dir):
     """
-    Changes the working directory.
-    Returns 0 if succeded, 1 if failed. (> int)
+    Changes the working directory.\n
+    Returns the new working directory if succeded, 1 if failed. (> str/int)
     """
     try:
         os.chdir(new_dir)
-        return 0
+        return new_dir
     except:
         return 1
 
@@ -71,40 +72,93 @@ def working_dir():
     return os.getcwd()
 
 ## COMMANDS
-def command_output(command_list):
+def command_output(commands, capture_errors=True, hide_error=False, shell=False, universal_newlines=True):
     """
     Executes a command and returns the output of the command. (> mostly string)
     """
-    if type(command_list) == type(['hey', 'hey']):
-        result = subprocess.check_output(command_list, universal_newlines=True)
+    if capture_errors:
+        stderr_var = subprocess.STDOUT
+    elif hide_error:
+        stderr_var = subprocess.DEVNULL
+    else:
+        stderr_var = None
+    if type(commands) == type(['hey', 'hey']):
+        result = subprocess.check_output(commands, universal_newlines=universal_newlines, shell=shell, stderr=stderr_var)
         return result
-    elif type(command_list) == type('hey hey'):
-        commands = command_list.split(' ')
-        result = subprocess.check_output(commands, universal_newlines=True)
+    elif type(commands) == type('hey hey'):
+        new_commands = commands.split(' ')
+        result = subprocess.check_output(new_commands, universal_newlines=universal_newlines, shell=shell, stderr=stderr_var)
         return result
     else:
         return 'error'
 
-def command(command):
+def command(command, hide_output=False, hide_error=False, shell=False):
     """
     Executes a command and returns the response code. (> mostly int)
     """
     if type(command) == type(['hey', 'hey']):
-        result = subprocess.call(command)
-        return result
+        if hide_output:
+            if hide_error:
+                result = subprocess.call(command, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT, shell=shell)
+                return result
+            else:
+                result = subprocess.call(command, stdout=subprocess.DEVNULL, shell=shell)
+                return result
+        else:
+            if hide_error:
+                result = subprocess.call(command, stderr=subprocess.DEVNULL, shell=shell)
+                return result
+            else:
+                result = subprocess.call(command, shell=shell)
+                return result
     elif type(command) == type('hey hey'):
         commands = command.split(' ')
-        result = subprocess.check_output(commands)
-        return result
+        if hide_output:
+            if hide_error:
+                result = subprocess.call(commands, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT, shell=shell)
+                return result
+            else:
+                result = subprocess.call(commands, stdout=subprocess.DEVNULL, shell=shell)
+                return result
+        else:
+            if hide_error:
+                result = subprocess.call(commands, stderr=subprocess.DEVNULL, shell=shell)
+                return result
+            else:
+                result = subprocess.call(commands, shell=shell)
+                return result
     else:
         return 1
 
-## MAKE HTTP REQUESTS
-def request(url, method, parameters=None, data=None, headers=None, json_body=None):
+def pip_install(packages_to_install, upgrade=False, hide_output=False, hide_error=False):
     """
-    Makes an HTTP request.
-    This function needs at least an url and the method (called method here).
-    Returns a value of type <Response>
+    Install the given PyPi (pip) packages.
+    """
+    list_of_packages = ''
+    try:
+        if type(packages_to_install) == type(['hey', 'hey']):
+            for package in packages_to_install:
+                list_of_packages = ' ' + package
+        elif type(packages_to_install) == type('hey hey'):
+            list_of_packages = packages_to_install
+        if list_of_packages != '':
+            if upgrade:
+                result = command('pip install' + list_of_packages + ' --upgrade', hide_output=hide_output, hide_error=hide_error)
+                return result
+            else:
+                result = command('pip install' + list_of_packages, hide_output=hide_output, hide_error=hide_error)
+                return result
+        else:
+            return -2
+    except:
+        return -1
+
+## MAKE HTTP REQUESTS
+def request(url, method='get', parameters=None, data=None, headers=None, json_body=None):
+    """
+    Makes an HTTP request.\n
+    This function needs at least an url.\n
+    Returns a value of type <Response>\n
     See the requests module documentation to learn more about this response type.
     """
     if method.lower() == 'get':
@@ -133,7 +187,7 @@ def request(url, method, parameters=None, data=None, headers=None, json_body=Non
 
 def request_statuscode(url, method='get', parameters=None, data=None, headers=None, json_body=None):
     """
-    Makes an HTTP request and returns its status code.
+    Makes an HTTP request and returns its status code. (> int)\n
     This function needs at least an url.
     """
     if method.lower() == 'get':
@@ -182,14 +236,34 @@ def current_time():
     Returns the current time with the format HOURs:MINUTEs:SECONDs (> string)
     """
     now = datetime.datetime.now()
-    time = now.strftime("%H:%M:%S")
-    return time
+    time_var = now.strftime("%H:%M:%S")
+    return time_var
 
 def current_time_raw():
     """
     Returns the current time as a datetime object (> datetime)
     """
     return datetime.datetime.now()
+
+def timing():
+    """
+    Returns the current time in seconds since 1970.
+    """
+    return time.time()
+
+def process_time():
+    """
+    Returns the time since the beginning of the process.
+    """
+    return time.process_time()
+
+def pid():
+    """
+    Returns the PID (process identifier) of the current process (python process).
+
+    > Might, for example, differ in the same python script if using multiprocessing.
+    """
+    return os.getpid()
 
 # SYSTEM TIMEZONE
 def timezone():
@@ -200,7 +274,7 @@ def timezone():
 
 def hours_from_greenwich():
     """
-    Returns the number of hours between greenwitch and the computer. (> string)
+    Returns the number of hours between greenwitch and the computer. (> string)\n
     The string is formatted following this format: < + or - > and < two digit integer >
     """
     hours = time.strftime("%z", time.gmtime())
@@ -209,9 +283,11 @@ def hours_from_greenwich():
 ## DISPLAY ACTIONS
 def display_action(action_to_display, times=3, delay=0.2):
     """
-    Used to display an action (three dots will be animated after your message)
-    Warning: this is a blocking function, which means the program will only continue when the message disappear.
+    Used to display an action (three dots will be animated after your message)\n
+    Warning: this is a blocking function, which means the program will only continue when the message disappear.\n
     To display a message with a non-blocking function, try display().
+
+    > Returns 0 when done (> int)
     """
     for _ in range(times):
         #clear()
@@ -224,6 +300,7 @@ def display_action(action_to_display, times=3, delay=0.2):
         print(action_to_display + "...", end="\r")
         sleep(delay)
         clear()
+    return 0
 
 
 ## DISPLAY IN ANOTHER THREAD
@@ -234,38 +311,47 @@ def display_title(title_string):
     Sets the title for the message to be displayed with display()
     """
     global title
-    title = title_string
-    return title_string
+    if type(title_string) == type('Hey hey'):
+        title = title_string
+        return title
+    else:
+        return f'Error: unsupported argument type {type(title_string)}'
 
 def display_body(body_list):
     """
-    Sets the body for the message to be displayed with display()
+    Sets the body for the message to be displayed with display()\n
     The body needs to be a list with each element of the list being a line.
     """
     global body
-    body = body_list
-    return body_list
+    if type(body_list) == type(['hey', 'hey']):
+        body = body_list
+        return body
+    elif type(body_list) == type('Hey hey'):
+        body = [body_list]
+        return body
+    else:
+        return f'Error: non supported argument type {type(body_list)}'        
 
 def display(wait=2, delay=0.1):
     """
-    Displays a message with his title (set with the display_title() function) and his body (set with the display_body() function)
-    This message will be displayed in another thread and therefore will be non-blocking (code after this function will continue running normally)
+    Displays a message with his title (set with the display_title() function) and his body (set with the display_body() function)\n
+    This message will be displayed in another thread and therefore will be non-blocking (code after this function will continue running normally)\n
     (> string if error)
     """
     global multi_thread_display_waiting_time
     multi_thread_display_waiting_time = wait
-    if stop_displaying == False:
+    if not stop_displaying:
         for number in range(len(title) + 1):
             clear()
-            display_title = ''
+            display_title_var = ''
             for i in range(number):
-                display_title = display_title + title[i]
-            print(display_title)
+                display_title_var = display_title_var + title[i]
+            print(display_title_var)
             print('')
             for line in body:
                 print(line)
             sleep(delay)
-        if stop_displaying == False:
+        if not stop_displaying:
             t = threading.Timer(wait, display, args=[wait, delay])
             t.daemon = True
             t.start()
@@ -278,7 +364,7 @@ def stop_display():
     Stops displaying the multi-threaded status message (if launch through the display() function)
     """
     global stop_displaying
-    if stop_displaying == False:
+    if not stop_displaying:
         stop_displaying = True
         sleep(multi_thread_display_waiting_time)
         stop_displaying = False
@@ -290,7 +376,7 @@ def stop_display():
 # MOVING A FILE
 def move_file(origin, destination):
     """
-    Moves a given file to a given destination (you can use filecenter too) (> int)
+    Moves a given file to a given destination (you can use filecenter too) (> string)
     """
     correct_path_of_origin = origin
     correct_path_of_destination = destination
@@ -312,7 +398,7 @@ def move_file(origin, destination):
             number_of_iterations += 1
     try:
         shutil.move(correct_path_of_origin, correct_path_of_destination)
-        return 0
+        return correct_path_of_destination
     except:
         return 1
 
@@ -370,7 +456,7 @@ def open_file(file):
 
 def make_dir(path_of_new_dir):
     """
-    Makes a directory at the given path.
+    Makes a directory at the given path. (> str)
     """
     try:
         os.makedirs(path_of_new_dir)
@@ -380,17 +466,17 @@ def make_dir(path_of_new_dir):
 
 ### WRITING A TEXT FILE
 
-def write_file(title, text, destination=None, append=False):
+def write_file(file_title, text, destination=None, append=False):
     """
-    To write a text file.
-    Takes 3 arguments: title, text and destination(optional)
+    To write a text file.\n
+    Takes 3 arguments: file_title, text and destination(optional)\n
     Returns an integer (0 if success, 1 if text isn't in the right format)
     """
-    if destination == None:
+    if destination is None:
         if not append:
-            writing_file = open(title, 'w+')
+            writing_file = open(file_title, 'w+')
         else:
-            writing_file = open(title, 'a+')
+            writing_file = open(file_title, 'a+')
         if type(text) == type('Example of string'):
             writing_file.write(text)
         elif type(text) == type(['Example', 'of', 'list']):
@@ -404,9 +490,9 @@ def write_file(title, text, destination=None, append=False):
         current_working_dir = working_dir()
         change_working_dir(destination)
         if not append:
-            writing_file = open(title, 'w+')
+            writing_file = open(file_title, 'w+')
         else:
-            writing_file = open(title, 'a+')
+            writing_file = open(file_title, 'a+')
         if type(text) == type('Example of string'):
             writing_file.write(text)
         elif type(text) == type(['Example', 'of', 'list']):
@@ -419,12 +505,20 @@ def write_file(title, text, destination=None, append=False):
         return 0
 
 def read_file(file_path):
+    """
+    Outputs the content of a text file (> string)
+    """
     reading_file = open(file_path)
     result = reading_file.read()
     reading_file.close()
     return result
 
 def read_file_line(file_path, lines_to_read=1):
+    """
+    Outputs a certain, or multiple lines of a text file (> list of string)
+
+    > lines_to_read is an integer or a list of integer which represents the wanted line number.
+    """
     results = []
     if type(lines_to_read) == type(1):
         reading_lines = [lines_to_read]
@@ -437,14 +531,49 @@ def read_file_line(file_path, lines_to_read=1):
     reading_file.close()
     return results
 
+
+def find_inside_file(file_path, search_query, whole_document=False):
+    """
+    Searches through a file for the given search term (search query).
+
+    > The search stops at the first result if whole_document is False (default).
+    > Returns a dictionnary or a list of dictionnary.
+    """
+    file = open(file_path)
+    line = file.readline()
+    line_no = 1
+    if whole_document == False:
+        result = {} 
+        while line != '' :
+            index = line.find(search_query)
+            if index != -1:
+                result = {'line_number': line_no, 'line': line, 'file': file_path, 'search_term': search_query}
+                break
+            line = file.readline()
+            line_no += 1
+        file.close()
+        return result
+    else:
+        results = []
+        while line != '':
+            index = line.find(search_query)
+            if index != -1:
+                results.append({'line_number': line_no, 'line': line, 'file': file_path, 'search_term': search_query})
+            line = file.readline()
+            line_no += 1
+        file.close()
+        return results
+
+
+
 ## CONVERTING
 
 # CONVERTING SIZE FROM BYTES
 def get_scaled_size(bytes, suffix="B"):
     """
-    Credit to PythonCode for this function.
-    > https://www.thepythoncode.com/article/get-hardware-system-information-python
-    Scale bytes to its proper format
+    Credit to PythonCode for this function.\n
+    > https://www.thepythoncode.com/article/get-hardware-system-information-python\n
+    Scale bytes to its proper format\n
     e.g:
         1253656 => '1.20MB'
         1253656678 => '1.17GB'
@@ -459,8 +588,8 @@ def get_scaled_size(bytes, suffix="B"):
 # CONVERTING WAVELENGTH TO RGB
 def wavelength_to_rgb(wavelength, gamma=0.8):
     '''
-    Code by Noah.org
-    http://www.noah.org/wiki/Wavelength_to_RGB_in_Python
+    Code by Noah.org\n
+    http://www.noah.org/wiki/Wavelength_to_RGB_in_Python\n
 
     This converts a given wavelength of light to an 
     approximate RGB color value. The wavelength must be given
@@ -591,21 +720,29 @@ def fibonacci(n):
     return(result)
 
 
-def json_to_dict(element):
+def json_to_dict(json_string):
+    """
+    Converts a JSON string to a Python Dictionnary. (> dict)
+    """
     try:
-        return json.loads(element)
+        return json.loads(json_string)
     except:
         return {'error': 'An error occured while converting your json string.'}
 
-def dict_to_json_string(element):
+def dict_to_json_string(dict):
+    """
+    Converts a Python Dictionnary to a JSON string. (> str)
+    """
     try:
-        return json.dumps(element)
+        return json.dumps(dict)
     except:
         return 'An error occured while converting your dict.'
 
-def hash_image(image, algorithm='aHash'):
+def hash_image(image, algorithm='aHash', raw=False):
     """
-    Hashes the given image with the chosen algorithm (average hash by default)
+    Hashes the given image with the chosen algorithm (average hash by default) (> str or ImageHash if raw)\n
+
+    > the image needs to be a PIL (Pillow) instance.
     © Anime no Sekai - 2020
     Project Erina
     """
@@ -624,133 +761,278 @@ def hash_image(image, algorithm='aHash'):
         image_hash = imagehash.phash_simple(image)
     elif algorithm == 'wHash':
         image_hash = imagehash.whash(image)
-    return(image_hash)
+    if raw:
+        return(image_hash)
+    else:
+        return(str(image_hash))
 
-
-def hash_image_from_url(image_url, algorithm='aHash'):
+def hash_image_from_url(image_url, algorithm='aHash', raw=False):
     """
-    Hashes the given image from the image url with the chosen algorithm (average hash by default)
+    Hashes the given image from the image url with the chosen algorithm (average hash by default) (> str or ImageHash if raw)\n
     © Anime no Sekai - 2020
     Project Erina
     """
     image_request = request(image_url, 'get')
     downloaded_image = Image.open(BytesIO(image_request.content)) # Open the downloaded image as a PIL Image instance
-    return(hash_image(image=downloaded_image, algorithm=algorithm))
+    if raw:
+        return(hash_image(image=downloaded_image, algorithm=algorithm))
+    else:
+        return(str(hash_image(image=downloaded_image, algorithm=algorithm)))
 
-def hash_image_from_path(image_path, algorithm='aHash'):
+def hash_image_from_path(image_path, algorithm='aHash', raw=False):
     """
-    Hashes the given image from his path with the chosen algorithm (average hash by default)
+    Hashes the given image from his path with the chosen algorithm (average hash by default) (> str or ImageHash if raw)\n
     © Anime no Sekai - 2020
     Project Erina
     """
     image = Image.open(image_path)
-    return(hash_image(image=image, algorithm=algorithm))
+    if raw:
+        return(hash_image(image=image, algorithm=algorithm))
+    else:
+        return(str(hash_image(image=image, algorithm=algorithm)))
+
+def hash_string_to_raw_hash(hash_string):
+    """
+    Converts a Hash String to a raw hash instance (ImageHash Class)
+
+    Useful to make the hamming distance of two hashes for example (HASH1 - HASH2 = Hamming Distance of those two hashes).
+    """
+    result_hash = imagehash.hex_to_hash(hash_string)
+    return result_hash    
 
 def base64_from_image(image_path):
+    """
+    Encodes an image in base64 (> str)
+    """
     image = open(image_path, 'rb')
     image_content = image.read()
     image.close()
     return(base64.b64encode(image_content).decode('ascii'))
 
 def string_to_base64(string):
+    """
+    Encodes a string in base64 (> str)
+    """
     string_bytes = string.encode('ascii')
     base64_encoded = base64.b64encode(string_bytes)
     base64string = base64_encoded.decode('ascii')
     return base64string
 
 def string_to_ascii(string):
+    """
+    Encodes a string in ascii (bytes) (> bytes/ascii)
+    """
     string_bytes = string.encode('ascii')
     return string_bytes
 
 def ascii_to_string(ascii_element):
+    """
+    Encodes an ascii string in string (> str)
+    """
     string_decoded = ascii_element.decode('ascii')
     return string_decoded
 
 
 ### IMAGE ENHANCEMENT
 def image_brightness_enhancement(image_path, output_name, enhancement_factor=1):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    enhancer = ImageEnhance.Brightness(original_image)
-    enhanced = enhancer.enhance(enhancement_factor)
-    enhanced.save(destination_path + output_name)
+    """
+    Enhance the image's brightness by the given factor.
+
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        enhancer = ImageEnhance.Brightness(original_image)
+        enhanced = enhancer.enhance(enhancement_factor)
+        enhanced.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
 
 def image_contrast_enhancement(image_path, output_name, enhancement_factor=1):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    enhancer = ImageEnhance.Contrast(original_image)
-    enhanced = enhancer.enhance(enhancement_factor)
-    enhanced.save(destination_path + output_name)
+    """
+    Enhance the image's contrast by the given factor.
+
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        enhancer = ImageEnhance.Contrast(original_image)
+        enhanced = enhancer.enhance(enhancement_factor)
+        enhanced.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
 
 def image_color_enhancement(image_path, output_name, enhancement_factor=1):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    enhancer = ImageEnhance.Color(original_image)
-    enhanced = enhancer.enhance(enhancement_factor)
-    enhanced.save(destination_path + output_name)
+    """
+    Enhance the image's color by the given factor.
 
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        enhancer = ImageEnhance.Color(original_image)
+        enhanced = enhancer.enhance(enhancement_factor)
+        enhanced.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
 def image_grasyscale(image_path, output_name):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    image_grayscale = original_image.convert('L')
-    image_grayscale.save(destination_path + output_name)
+    """
+    Turns the image in a grayscale (no color) image.
+
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        image_grayscale = original_image.convert('L')
+        image_grayscale.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
 
 def image_rgb(image_path, output_name):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    image_rgb = original_image.convert('RGB')
-    image_rgb.save(destination_path + output_name)
+    """
+    Converts the image in an RGB (color profile) image.
+
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        image_rgb = original_image.convert('RGB')
+        image_rgb.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
+
+def image_cmyk(image_path, output_name):
+    """
+    Converts the image in an CMYK (color profile) image.
+
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        image_rgb = original_image.convert('CMYK')
+        image_rgb.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
 
 def image_resize(image_path, output_name, new_size):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    image_resized = original_image.resize(new_size)
-    image_resized.save(destination_path + output_name)
+    """
+    Resizes the image with the given size.
+    > new_size needs to be a tuple of 2 values.
+
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        image_resized = original_image.resize(new_size)
+        image_resized.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
 
 def image_resize_with_same_aspect_ratio(image_path, output_name, new_size):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    image_thumbnail = original_image.copy()
-    image_thumbnail.thumbnail(new_size)
-    image_thumbnail.save(destination_path + output_name)
+    """
+    Resizes the images while keeping the same aspect ratio (the image won't be strectched).
+    > new_size needs to be a tuple of 2 values.
+
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        image_thumbnail = original_image.copy()
+        image_thumbnail.thumbnail(new_size)
+        image_thumbnail.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
 
 def image_crop(image_path, output_name, crop_size):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    image_cropped = original_image.crop(crop_size)
-    image_cropped.save(destination_path + output_name)
+    """
+    Crops the image with the given size.
+    > crop_size needs to be a tuple of 4 values.
 
-def image_to_jpeg(image_path, output_name, jpeg_quality):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    original_image.save(destination_path + output_name, quality=jpeg_quality)
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        image_cropped = original_image.crop(crop_size)
+        image_cropped.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
+
+def image_to_jpeg(image_path, output_name, jpeg_quality=100):
+    """
+    Saves the image as jpeg, with the given quality (compression quality).
+
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        original_image.save(destination_path + output_name, quality=jpeg_quality)
+        return destination_path + output_name
+    except:
+        return 1
 
 def image_watermark(image_path, output_name, watermark_path):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    watermark = Image.open(watermark_path)
-    watermarked = original_image.copy()
-    position = ((watermarked.width - watermark.width), (watermarked.height - watermark.height))
-    watermarked.paste(watermark, position, watermark)
-    watermarked.save(destination_path + output_name)
+    """
+    Adds a watermark at the bottom right of the image.
+
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        watermark = Image.open(watermark_path)
+        watermarked = original_image.copy()
+        position = ((watermarked.width - watermark.width), (watermarked.height - watermark.height))
+        watermarked.paste(watermark, position, watermark)
+        watermarked.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
 
 def image_invert(image_path, output_name):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    image_inverted = ImageOps.invert(original_image)
-    image_inverted.save(destination_path + output_name)
+    """
+    Inverts the image colors.
 
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        image_inverted = ImageOps.invert(original_image)
+        image_inverted.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
 
 def _givenoisy(noise_typ, image):
     '''
@@ -769,7 +1051,7 @@ def _givenoisy(noise_typ, image):
         'speckle'   Multiplicative noise using out = image + n*image,where
                     n is uniform noise with specified mean & variance.
 
-    By Shubham Pachori
+    By Shubham Pachori\n
     > https://stackoverflow.com/questions/22937589/how-to-add-noise-gaussian-salt-and-pepper-etc-to-image-in-python-with-opencv
     '''
     if noise_typ == "gauss":
@@ -811,40 +1093,76 @@ def _givenoisy(noise_typ, image):
         return noisy
 
 def image_gaussian_noise(image_path, output_name):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    numpy_array_image = np.asarray(original_image)
-    gaussian_array = _givenoisy('gauss', numpy_array_image)
-    gaussian = Image.fromarray((gaussian_array * 255).astype(np.uint8))
-    gaussian.save(destination_path + output_name)
+    """
+    Adds gaussian noise to the image.
+
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        numpy_array_image = np.asarray(original_image)
+        gaussian_array = _givenoisy('gauss', numpy_array_image)
+        gaussian = Image.fromarray((gaussian_array * 255).astype(np.uint8))
+        gaussian.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
 
 def image_salt_and_pepper_noise(image_path, output_name):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    numpy_array_image = np.asarray(original_image)
-    salt_and_pepper_array = _givenoisy('s&p', numpy_array_image)
-    salt_and_pepper = Image.fromarray((salt_and_pepper_array * 255).astype(np.uint8))
-    salt_and_pepper.save(destination_path + output_name)
+    """
+    Adds salt and pepper noise the image.
+
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        numpy_array_image = np.asarray(original_image)
+        salt_and_pepper_array = _givenoisy('s&p', numpy_array_image)
+        salt_and_pepper = Image.fromarray((salt_and_pepper_array * 255).astype(np.uint8))
+        salt_and_pepper.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
 
 def image_poisson_noise(image_path, output_name):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    numpy_array_image = np.asarray(original_image)
-    poisson_array = _givenoisy('poisson', numpy_array_image)
-    poisson = Image.fromarray((poisson_array * 255).astype(np.uint8))
-    poisson.save(destination_path + output_name)
+    """
+    Adds poisson noise to the image.
+
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        numpy_array_image = np.asarray(original_image)
+        poisson_array = _givenoisy('poisson', numpy_array_image)
+        poisson = Image.fromarray((poisson_array * 255).astype(np.uint8))
+        poisson.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
 
 def image_speckle_noise(image_path, output_name):
-    filename = os.path.basename(image_path)
-    destination_path = image_path[:-len(filename)]
-    original_image = Image.open(image_path)
-    numpy_array_image = np.asarray(original_image)
-    speckle_array = _givenoisy('speckle', numpy_array_image)
-    speckle = Image.fromarray((speckle_array * 255).astype(np.uint8))
-    speckle.save(destination_path + output_name)
+    """
+    Adds speckle noise to the image.
+
+    Returns the path of the new file if success, 1 if error (> str/int)
+    """
+    try:
+        filename = os.path.basename(image_path)
+        destination_path = image_path[:-len(filename)]
+        original_image = Image.open(image_path)
+        numpy_array_image = np.asarray(original_image)
+        speckle_array = _givenoisy('speckle', numpy_array_image)
+        speckle = Image.fromarray((speckle_array * 255).astype(np.uint8))
+        speckle.save(destination_path + output_name)
+        return destination_path + output_name
+    except:
+        return 1
 
 ## SYSTEM AND HARDWARE INFO
 
@@ -888,8 +1206,8 @@ def boot_time():
     """
     Returns the boot time with the format YEAR/MONTH/DAY HOUR:MIN:SECOND (> string)
     """
-    boot_time_timestamp = psutil.boot_time()
-    bt = datetime.datetime.fromtimestamp(boot_time_timestamp)
+    boot_time_timestamp_var = psutil.boot_time()
+    bt = datetime.datetime.fromtimestamp(boot_time_timestamp_var)
     return f"{bt.year}/{bt.month}/{bt.day} {bt.hour}:{bt.minute}:{bt.second}"
 
 def boot_time_timestamp():
@@ -1075,8 +1393,6 @@ def disk_infos():
     """
     return disks_info()
 
-
-
 def disk_total_read_raw():
     """
     Returns the total amount of data read for the startup disk in bytes (> int)
@@ -1154,24 +1470,23 @@ def network_interfaces():
     Returns the IP Addresss/MAC address, Netmask and Brodcast IP/MAC for each network interfaces. (> dict)
     """
     # NETWORK INTERFACES DETAILS
-    network_interfaces = {}
-
+    network_interfaces_var = {}
     try:
         if_addrs = psutil.net_if_addrs()
         for interface_name, interface_addresses in if_addrs.items():
             for address in interface_addresses:
                 if str(address.family) == 'AddressFamily.AF_INET':
-                    network_interfaces[interface_name] = {
+                    network_interfaces_var[interface_name] = {
                         'ip': address.address,
                         'netmask': address.netmask,
                         'broadcast_ip': address.broadcast
                     }
                 elif str(address.family) == 'AddressFamily.AF_PACKET':
-                    network_interfaces[interface_name] = {
+                    network_interfaces_var[interface_name] = {
                         'mac': address.address,
                         'netmask': address.nNetmask,
                         'broadcast_mac': address.broadcast
                     }
     except:
-        network_interfaces = {'status': 'error'}
-    return network_interfaces
+        network_interfaces_var = {'status': 'error'}
+    return network_interfaces_var
