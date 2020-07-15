@@ -153,6 +153,23 @@ def pip_install(packages_to_install, upgrade=False, hide_output=False, hide_erro
     except:
         return -1
 
+def ping(domain, number_of_pings=1):
+    ping_results = command_output('ping ' + str(domain) + ' -c ' + str(number_of_pings))
+    results = {}
+    ping_results_list = str(ping_results).split('\n')
+    results['console_output'] = ping_results_list
+    min_avg_max_results_console_raw = ping_results_list[4 + number_of_pings]
+    min_avg_max_results_console = min_avg_max_results_console_raw.split(' ')[3]
+    min_avg_max = min_avg_max_results_console.split('/')
+    minimum = min_avg_max[0]
+    average = min_avg_max[1]
+    maximum = min_avg_max[2]
+    results['minimum'] = minimum
+    results['average'] = average
+    results['maximum'] = maximum
+    return results
+
+
 ## MAKE HTTP REQUESTS
 def request(url, method='get', parameters=None, data=None, headers=None, json_body=None):
     """
