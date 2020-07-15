@@ -1585,7 +1585,7 @@ File Center is in constant development and fixes are made on a regular basis (bu
 If you want to help us and join me here is a quick guide.
 
 ### Files
-`__init.py__` is the main module
+`lifeeasy.py` is the main module
 
 `README.md` is the text file you're currently reading, with all the documentations and explanations.
 
