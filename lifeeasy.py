@@ -153,20 +153,59 @@ def pip_install(packages_to_install, upgrade=False, hide_output=False, hide_erro
     except:
         return -1
 
-def ping(domain, number_of_pings=1):
-    ping_results = command_output('ping ' + str(domain) + ' -c ' + str(number_of_pings))
-    results = {}
-    ping_results_list = str(ping_results).split('\n')
-    results['console_output'] = ping_results_list
-    min_avg_max_results_console_raw = ping_results_list[4 + number_of_pings]
-    min_avg_max_results_console = min_avg_max_results_console_raw.split(' ')[3]
-    min_avg_max = min_avg_max_results_console.split('/')
-    minimum = min_avg_max[0]
-    average = min_avg_max[1]
-    maximum = min_avg_max[2]
-    results['minimum'] = minimum
-    results['average'] = average
-    results['maximum'] = maximum
+def ping(domain, number_of_pings=1, raw=False):
+    """
+    Pings a server for the specified number of times and returns its minimum, average and maximum latency (in ms).\n
+
+    Returns a dictionnary with the minimum, average and maximum latency (in ms).
+    """
+    try:
+        if system() == 'nt':
+            ping_results = command_output('ping -n ' + str(number_of_pings) + ' ' + str(domain))
+            results = {}
+            min_avg_max_results_console = ping_results.split('\n')[6+number_of_pings].split(', ')
+            minimum = min_avg_max_results_console[0].split(' = ')[1].replace('ms', '')
+            maximum = min_avg_max_results_console[1].split(' = ')[1].replace('ms', '')
+            average = min_avg_max_results_console[2].split(' = ')[1].replace('ms', '')
+            results['minimum'] = minimum
+            results['average'] = average
+            results['maximum'] = maximum
+            if raw:
+                results['system'] = system()
+                results['ping_results'] = ping_results
+                results['min_avg_max_results_console'] = min_avg_max_results_console
+        else:
+            results = {}
+            ping_results = command_output('ping ' + str(domain) + ' -c ' + str(number_of_pings))
+            ping_results_list = str(ping_results).split('\n')
+            min_avg_max_results_console_raw = ping_results_list[4 + number_of_pings]
+            min_avg_max_results_console = min_avg_max_results_console_raw.split(' ')[3]
+            min_avg_max = min_avg_max_results_console.split('/')
+            minimum = min_avg_max[0]
+            average = min_avg_max[1]
+            maximum = min_avg_max[2]
+            results['minimum'] = minimum
+            results['average'] = average
+            results['maximum'] = maximum
+            if raw:
+                results['system'] = system()
+                results['ping_results'] = ping_results
+                results['ping_results_list'] = ping_results_list
+                results['min_avg_max_results_console_raw'] = min_avg_max_results_console_raw
+                results['min_avg_max_results_console'] = min_avg_max_results_console
+                results['min_avg_max'] = min_avg_max
+    except:
+        results = {}
+        results['system'] = system()
+        results['timestamp'] = timing()
+        results['error'] = 'Results not available.'
+        results['details'] = 'The process returned a non-zero exit status code. This might come from a server which is down, a request which timed out or an incorrect domain.'
+        if system == 'nt':
+            results['try'] = 'Try to execute "ping -n ' + str(number_of_pings) + ' ' + str(domain) 
+        else:
+            results['try'] = 'Try to execute "ping -c ' + str(number_of_pings) + ' ' + str(domain)
+        results['if'] = 'If it did work in your command-line/terminal then it might be a bug with lifeeasy, please go to the GitHub repository and create an issue.'
+        results['github'] = 'https://github.com/Animenosekai/lifeeasy'
     return results
 
 

@@ -193,6 +193,21 @@ Arguments:
 > Returns 'Sorry but this HTTP Request Method is not available yet.' if the method isn't available.
 
 ---
+- **`ping(domain, number_of_pings, raw)`**
+
+**Pings a server for the specified number of times and returns its minimum, average and maximum latency (in ms).**
+
+Arguments:
+
+    domain: the domain/IP where you want to ping.
+
+    number_of_pings (optional, default: 1): the number of times you want to ping the server.
+
+    raw (optional, default: False): Wether you want to see the raw output of the console to manipulate it by yourself (inside the 'ping_results' key of the returned dict).
+
+> Returns a dict with the minimum, average and maximum latency or an error dictionnary if it failed. (> dict)
+
+---
 
 - **`pip_install(packages_to_install, upgrade, hide_output, hide_error)`**
 
