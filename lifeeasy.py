@@ -160,7 +160,7 @@ def ping(domain, number_of_pings=1, raw=False):
     Returns a dictionnary with the minimum, average and maximum latency (in ms).
     """
     try:
-        if system() == 'nt':
+        if system_name() == 'nt':
             ping_results = command_output('ping -n ' + str(number_of_pings) + ' ' + str(domain))
             results = {}
             min_avg_max_results_console = ping_results.split('\n')[6+number_of_pings].split(', ')
@@ -172,6 +172,7 @@ def ping(domain, number_of_pings=1, raw=False):
             results['maximum'] = maximum
             if raw:
                 results['system'] = system()
+                results['system_name'] = system_name()
                 results['ping_results'] = ping_results
                 results['min_avg_max_results_console'] = min_avg_max_results_console
         else:
@@ -189,6 +190,7 @@ def ping(domain, number_of_pings=1, raw=False):
             results['maximum'] = maximum
             if raw:
                 results['system'] = system()
+                results['system_name'] = system_name()
                 results['ping_results'] = ping_results
                 results['ping_results_list'] = ping_results_list
                 results['min_avg_max_results_console_raw'] = min_avg_max_results_console_raw
@@ -197,10 +199,11 @@ def ping(domain, number_of_pings=1, raw=False):
     except:
         results = {}
         results['system'] = system()
+        results['system_name'] = system_name()
         results['timestamp'] = timing()
         results['error'] = 'Results not available.'
         results['details'] = 'The process returned a non-zero exit status code. This might come from a server which is down, a request which timed out or an incorrect domain.'
-        if system == 'nt':
+        if system_name() == 'nt':
             results['try'] = 'Try to execute "ping -n ' + str(number_of_pings) + ' ' + str(domain) 
         else:
             results['try'] = 'Try to execute "ping -c ' + str(number_of_pings) + ' ' + str(domain)
@@ -1224,9 +1227,15 @@ def image_speckle_noise(image_path, output_name):
 
 def system():
     """
-    Returns the system name, generally 'nt' is Windows, 'Darwin' is macOS (> string)
+    Returns the system name (> string)
     """
     return platform.uname().system
+
+def system_name():
+    """
+    Returns the system name from os.name, generally 'nt' is Windows, 'Darwin' is macOS (> string)
+    """
+    return os.name
 
 def node():
     """

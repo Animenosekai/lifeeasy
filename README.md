@@ -1060,6 +1060,18 @@ Arguments:
 
 **Returns the system name.**
 
+Arguments:
+
+    there is no argument.
+
+> Returns the system name (> string)
+
+---
+
+- **`system_name()`**
+
+**Returns the system name from os.name.**
+
     Example:
     'nt': Windows
     'Darwin': macOS
