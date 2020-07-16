@@ -143,10 +143,10 @@ def pip_install(packages_to_install, upgrade=False, hide_output=False, hide_erro
             list_of_packages = packages_to_install
         if list_of_packages != '':
             if upgrade:
-                result = command('pip install' + list_of_packages + ' --upgrade', hide_output=hide_output, hide_error=hide_error)
+                result = command('pip install ' + list_of_packages + ' --upgrade', hide_output=hide_output, hide_error=hide_error)
                 return result
             else:
-                result = command('pip install' + list_of_packages, hide_output=hide_output, hide_error=hide_error)
+                result = command('pip install ' + list_of_packages, hide_output=hide_output, hide_error=hide_error)
                 return result
         else:
             return -2
@@ -833,11 +833,8 @@ def hash_image_from_url(image_url, algorithm='aHash', raw=False):
     """
     image_request = request(image_url, 'get')
     downloaded_image = Image.open(BytesIO(image_request.content)) # Open the downloaded image as a PIL Image instance
-    if raw:
-        return(hash_image(image=downloaded_image, algorithm=algorithm))
-    else:
-        return(str(hash_image(image=downloaded_image, algorithm=algorithm)))
-
+    return(hash_image(image=downloaded_image, algorithm=algorithm, raw=raw))
+    
 def hash_image_from_path(image_path, algorithm='aHash', raw=False):
     """
     Hashes the given image from his path with the chosen algorithm (average hash by default) (> str or ImageHash if raw)\n
@@ -845,11 +842,8 @@ def hash_image_from_path(image_path, algorithm='aHash', raw=False):
     Project Erina
     """
     image = Image.open(image_path)
-    if raw:
-        return(hash_image(image=image, algorithm=algorithm))
-    else:
-        return(str(hash_image(image=image, algorithm=algorithm)))
-
+    return(hash_image(image=image, algorithm=algorithm, raw=raw))
+    
 def hash_string_to_raw_hash(hash_string):
     """
     Converts a Hash String to a raw hash instance (ImageHash Class)
@@ -857,7 +851,7 @@ def hash_string_to_raw_hash(hash_string):
     Useful to make the hamming distance of two hashes for example (HASH1 - HASH2 = Hamming Distance of those two hashes).
     """
     result_hash = imagehash.hex_to_hash(hash_string)
-    return result_hash    
+    return result_hash
 
 def base64_from_image(image_path):
     """
@@ -953,8 +947,8 @@ def image_grasyscale(image_path, output_name):
         filename = os.path.basename(image_path)
         destination_path = image_path[:-len(filename)]
         original_image = Image.open(image_path)
-        image_grayscale = original_image.convert('L')
-        image_grayscale.save(destination_path + output_name)
+        image_grayscale_var = original_image.convert('L')
+        image_grayscale_var.save(destination_path + output_name)
         return destination_path + output_name
     except:
         return 1
@@ -969,8 +963,8 @@ def image_rgb(image_path, output_name):
         filename = os.path.basename(image_path)
         destination_path = image_path[:-len(filename)]
         original_image = Image.open(image_path)
-        image_rgb = original_image.convert('RGB')
-        image_rgb.save(destination_path + output_name)
+        image_rgb_var = original_image.convert('RGB')
+        image_rgb_var.save(destination_path + output_name)
         return destination_path + output_name
     except:
         return 1
@@ -985,8 +979,8 @@ def image_cmyk(image_path, output_name):
         filename = os.path.basename(image_path)
         destination_path = image_path[:-len(filename)]
         original_image = Image.open(image_path)
-        image_rgb = original_image.convert('CMYK')
-        image_rgb.save(destination_path + output_name)
+        image_cmyk_var = original_image.convert('CMYK')
+        image_cmyk_var.save(destination_path + output_name)
         return destination_path + output_name
     except:
         return 1
@@ -1317,7 +1311,7 @@ def cpu_usage_per_core():
     """
     usage = {}
     for i, percentage in enumerate(psutil.cpu_percent(percpu=True)):
-        usage["core" + i] = percentage
+        usage["Core " + str(i)] = percentage
     return usage
 
 def cpu_usage():
